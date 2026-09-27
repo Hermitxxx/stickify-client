@@ -178,54 +178,82 @@ const Grainient: React.FC<GrainientProps> = ({
     const container = containerRef.current;
     if (!container) return;
 
-    const renderer = new Renderer({
-      webgl: 2,
-      alpha: true,
-      antialias: false,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
-    });
+    let renderer: Renderer | null = null;
+    try {
+      renderer = new Renderer({
+        webgl: 2,
+        alpha: true,
+        antialias: false,
+        dpr: Math.min(window.devicePixelRatio || 1, 2)
+      });
+    } catch {
+      try {
+        renderer = new Renderer({
+          webgl: 1,
+          alpha: true,
+          antialias: false,
+          dpr: Math.min(window.devicePixelRatio || 1, 2)
+        });
+      } catch (e) {
+        console.warn('Grainient: WebGL context creation failed on device', e);
+        return;
+      }
+    }
 
-    const gl = renderer.gl;
+    const gl = renderer?.gl;
+    if (!gl || !gl.canvas) {
+      console.warn('Grainient: WebGL context unavailable');
+      return;
+    }
+
     const canvas = gl.canvas as HTMLCanvasElement;
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.style.display = 'block';
     container.appendChild(canvas);
 
-    const geometry = new Triangle(gl);
-    const program = new Program(gl, {
-      vertex,
-      fragment,
-      uniforms: {
-        iTime:           { value: 0 },
-        iResolution:     { value: new Float32Array([1, 1]) },
-        uTimeSpeed:      { value: 0.25 },
-        uColorBalance:   { value: 0.0 },
-        uWarpStrength:   { value: 1.0 },
-        uWarpFrequency:  { value: 5.0 },
-        uWarpSpeed:      { value: 2.0 },
-        uWarpAmplitude:  { value: 50.0 },
-        uBlendAngle:     { value: 0.0 },
-        uBlendSoftness:  { value: 0.05 },
-        uRotationAmount: { value: 500.0 },
-        uNoiseScale:     { value: 2.0 },
-        uGrainAmount:    { value: 0.1 },
-        uGrainScale:     { value: 2.0 },
-        uGrainAnimated:  { value: 0.0 },
-        uContrast:       { value: 1.5 },
-        uGamma:          { value: 1.0 },
-        uSaturation:     { value: 1.0 },
-        uCenterOffset:   { value: new Float32Array([0, 0]) },
-        uZoom:           { value: 0.9 },
-        uColor1:         { value: new Float32Array([1, 1, 1]) },
-        uColor2:         { value: new Float32Array([1, 1, 1]) },
-        uColor3:         { value: new Float32Array([1, 1, 1]) },
-        uLightMode:      { value: 0.0 }
-      }
-    });
+    let geometry: Triangle;
+    let program: Program;
+    let mesh: Mesh;
 
-    const mesh = new Mesh(gl, { geometry, program });
-    ctxMap.set(container, { renderer, program, mesh });
+    try {
+      geometry = new Triangle(gl);
+      program = new Program(gl, {
+        vertex,
+        fragment,
+        uniforms: {
+          iTime:           { value: 0 },
+          iResolution:     { value: new Float32Array([1, 1]) },
+          uTimeSpeed:      { value: 0.25 },
+          uColorBalance:   { value: 0.0 },
+          uWarpStrength:   { value: 1.0 },
+          uWarpFrequency:  { value: 5.0 },
+          uWarpSpeed:      { value: 2.0 },
+          uWarpAmplitude:  { value: 50.0 },
+          uBlendAngle:     { value: 0.0 },
+          uBlendSoftness:  { value: 0.05 },
+          uRotationAmount: { value: 500.0 },
+          uNoiseScale:     { value: 2.0 },
+          uGrainAmount:    { value: 0.1 },
+          uGrainScale:     { value: 2.0 },
+          uGrainAnimated:  { value: 0.0 },
+          uContrast:       { value: 1.5 },
+          uGamma:          { value: 1.0 },
+          uSaturation:     { value: 1.0 },
+          uCenterOffset:   { value: new Float32Array([0, 0]) },
+          uZoom:           { value: 0.9 },
+          uColor1:         { value: new Float32Array([1, 1, 1]) },
+          uColor2:         { value: new Float32Array([1, 1, 1]) },
+          uColor3:         { value: new Float32Array([1, 1, 1]) },
+          uLightMode:      { value: 0.0 }
+        }
+      });
+      mesh = new Mesh(gl, { geometry, program });
+      ctxMap.set(container, { renderer, program, mesh });
+    } catch (e) {
+      console.warn('Grainient: Shader program initialization failed', e);
+      return;
+    }
 
     const setSize = () => {
       const rect = container.getBoundingClientRect();

@@ -147,58 +147,77 @@ const SpecularButton = ({
     const fx = fxRef.current;
     if (!btn || !fx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const renderer = new Renderer({ alpha: true, premultipliedAlpha: true, antialias: true, dpr });
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let renderer: Renderer | null = null;
+    let gl: any = null;
 
-    const geometry = new Triangle(gl);
-    if (geometry.attributes.uv) delete geometry.attributes.uv;
+    try {
+      renderer = new Renderer({ alpha: true, premultipliedAlpha: true, antialias: false, dpr });
+      gl = renderer.gl;
+    } catch (e) {
+      console.warn('SpecularButton: WebGL not available on device', e);
+      return;
+    }
 
-    const program = new Program(gl, {
-      vertex: VERT,
-      fragment: FRAG,
-      uniforms: {
-        uCenter: { value: [0, 0] },
-        uHalfSize: { value: [1, 1] },
-        uRadius: { value: 0 },
-        uAngle: { value: 2.4 },
-        uPx: { value: dpr },
-        uLineColor: { value: [1, 1, 1] },
-        uBaseColor: { value: [0.32, 0.32, 0.32] },
-        uIntensity: { value: 1 },
-        uShineSize: { value: 0.17 },
-        uShineFade: { value: 0.7 },
-        uThickness: { value: 1 },
+    if (!gl || !gl.canvas) {
+      return;
+    }
 
-        uBaseWidth: { value: dpr }
-      }
-    });
+    const canvas = gl.canvas as HTMLCanvasElement;
 
-    const mesh = new Mesh(gl, { geometry, program });
-    fx.appendChild(gl.canvas);
+    let geometry: Triangle;
+    let program: Program;
+    let mesh: Mesh;
+
+    try {
+      gl.clearColor(0, 0, 0, 0);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
+      geometry = new Triangle(gl);
+      if (geometry.attributes.uv) delete geometry.attributes.uv;
+
+      program = new Program(gl, {
+        vertex: VERT,
+        fragment: FRAG,
+        uniforms: {
+          uCenter: { value: [0, 0] },
+          uHalfSize: { value: [1, 1] },
+          uRadius: { value: 0 },
+          uAngle: { value: 2.4 },
+          uPx: { value: dpr },
+          uLineColor: { value: [1, 1, 1] },
+          uBaseColor: { value: [0.32, 0.32, 0.32] },
+          uIntensity: { value: 1 },
+          uShineSize: { value: 0.17 },
+          uShineFade: { value: 0.7 },
+          uThickness: { value: 1 },
+          uBaseWidth: { value: dpr }
+        }
+      });
+
+      mesh = new Mesh(gl, { geometry, program });
+      fx.appendChild(canvas);
+    } catch (e) {
+      console.warn('SpecularButton: Shader initialization failed', e);
+      return;
+    }
 
     const sizeRef = { w: 1, h: 1 };
     const resize = () => {
-      // Fractional size + explicit center keep the SDF pinned to the exact
-      // CSS border, instead of drifting up to a pixel from offsetWidth rounding.
       const rect = btn.getBoundingClientRect();
       const w = rect.width;
       const h = rect.height;
       sizeRef.w = w;
       sizeRef.h = h;
-      renderer.setSize(w + PAD * 2, h + PAD * 2);
-      program.uniforms.uCenter.value = [(PAD + w / 2) * dpr, (PAD + h / 2) * dpr];
-      program.uniforms.uHalfSize.value = [(w / 2) * dpr, (h / 2) * dpr];
+      renderer?.setSize(w + PAD * 2, h + PAD * 2);
+      if (program.uniforms.uCenter) program.uniforms.uCenter.value = [(PAD + w / 2) * dpr, (PAD + h / 2) * dpr];
+      if (program.uniforms.uHalfSize) program.uniforms.uHalfSize.value = [(w / 2) * dpr, (h / 2) * dpr];
     };
     const ro = new ResizeObserver(resize);
     ro.observe(btn);
     resize();
 
-    // Light angle steers toward the pointer (anywhere on the page) and falls
-    // back to a slow sweep when the pointer hasn't moved yet.
     let pointerAngle: number | null = null;
     let proximityT = 0;
     const onPointerMove = (e: PointerEvent) => {
@@ -208,8 +227,6 @@ const SpecularButton = ({
       const dx = Math.max(rect.left - e.clientX, 0, e.clientX - rect.right);
       const dy = Math.max(rect.top - e.clientY, 0, e.clientY - rect.bottom);
       const dist = Math.hypot(dx, dy);
-      // Over the button itself the light settles on the diagonal (framing the
-      // corners) and gently sways with the cursor position within the button.
       if (dist === 0) {
         const nx = (e.clientX - cx) / (rect.width / 2);
         const ny = (cy - e.clientY) / (rect.height / 2);
@@ -243,7 +260,6 @@ const SpecularButton = ({
       const diff = ((target - angle + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
       angle += diff * (1 - Math.exp(-dt * 7));
 
-      // Shine fades in with pointer proximity unless autoAnimate keeps it on
       const brightTarget = p.autoAnimate ? 1 : proximityT;
       bright += (brightTarget - bright) * (1 - Math.exp(-dt * 8));
 
@@ -257,7 +273,7 @@ const SpecularButton = ({
       program.uniforms.uShineSize.value = (p.shineSize * Math.PI) / 180;
       program.uniforms.uShineFade.value = (p.shineFade * Math.PI) / 180;
       program.uniforms.uThickness.value = p.thickness * dpr;
-      renderer.render({ scene: mesh });
+      renderer?.render({ scene: mesh });
     };
     raf = requestAnimationFrame(update);
 
@@ -265,8 +281,8 @@ const SpecularButton = ({
       cancelAnimationFrame(raf);
       ro.disconnect();
       window.removeEventListener('pointermove', onPointerMove);
-      if (gl.canvas.parentNode === fx) fx.removeChild(gl.canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      if (canvas && canvas.parentNode === fx) fx.removeChild(canvas);
+      gl?.getExtension('WEBGL_lose_context')?.loseContext();
     };
   }, []);
 
@@ -276,7 +292,7 @@ const SpecularButton = ({
       type={type}
       disabled={disabled}
       onClick={onClick}
-      className={`relative m-0 inline-flex cursor-pointer items-center justify-center border-none font-medium leading-none tracking-[0.01em] outline-none transition-transform duration-150 active:scale-[0.97] disabled:cursor-default disabled:opacity-55 disabled:active:scale-100 [color:var(--sb-text-color)] [border-radius:var(--sb-radius)] [background:color-mix(in_srgb,var(--sb-tint)_calc(var(--sb-tint-opacity)*100%),transparent)] [backdrop-filter:blur(var(--sb-blur))] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_8px_24px_rgba(0,0,0,0.25)] focus-visible:outline-2 focus-visible:outline-offset-[3px] ${SIZES[size] || SIZES.md}${className ? ` ${className}` : ''}`}
+      className={`relative m-0 inline-flex cursor-pointer items-center justify-center border border-white/20 font-medium leading-none tracking-[0.01em] outline-none transition-all duration-150 active:scale-[0.97] disabled:cursor-default disabled:opacity-55 disabled:active:scale-100 [color:var(--sb-text-color)] [border-radius:var(--sb-radius)] [background:var(--sb-tint,#EB7F31)] [backdrop-filter:blur(var(--sb-blur))] shadow-md hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-[3px] ${SIZES[size] || SIZES.md}${className ? ` ${className}` : ''}`}
       style={
         {
           '--sb-radius': `${radius}px`,
@@ -288,7 +304,7 @@ const SpecularButton = ({
       }
     >
       <span ref={fxRef} aria-hidden="true" className="pointer-events-none absolute -inset-5 z-[1] [&_canvas]:block [&_canvas]:h-full [&_canvas]:w-full" />
-      <span className="relative z-[2]">{children}</span>
+      <span className="relative z-[2] font-semibold">{children}</span>
     </button>
   );
 };

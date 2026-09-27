@@ -135,6 +135,15 @@ void main(){
 }
 `;
 
+const vertexWebGL1 = vertex
+  .replace('#version 300 es\n', '')
+  .replace('in vec2 position;', 'attribute vec2 position;');
+
+const fragmentWebGL1 = fragment
+  .replace('#version 300 es\n', '')
+  .replace('out vec4 fragColor;\n', '')
+  .replace('  fragColor=o;', '  gl_FragColor=o;');
+
 
 // Keep renderer/program alive across re-renders so Effect 2 can update
 // uniforms without ever rebuilding the WebGL context.
@@ -219,8 +228,8 @@ const Grainient: React.FC<GrainientProps> = ({
     try {
       geometry = new Triangle(gl);
       program = new Program(gl, {
-        vertex,
-        fragment,
+        vertex: renderer.isWebgl2 ? vertex : vertexWebGL1,
+        fragment: renderer.isWebgl2 ? fragment : fragmentWebGL1,
         uniforms: {
           iTime:           { value: 0 },
           iResolution:     { value: new Float32Array([1, 1]) },

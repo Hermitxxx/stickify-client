@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import CardNav, { CardNavItem } from "./CardNav";
-import SpecularButton from "./SpecularButton";
+import PrimaryButton from "./PrimaryButton";
 import HeroBeams from "./HeroBeams";
 import { GoArrowRight } from "react-icons/go";
 
@@ -116,32 +116,17 @@ export default function HeroSection() {
           transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-6"
         >
-          {/* Primary Button using SpecularButton */}
-          <SpecularButton
+          {/* Primary Button */}
+          <PrimaryButton
             size="lg"
-            radius={18}
-            tint="#EB7F31"
-            tintOpacity={0.15}
-            blur={8}
-            textColor="#faf7f2"
-            lineColor="#FCAD38"
-            baseColor="#972828"
-            intensity={1.2}
-            shineSize={12}
-            shineFade={35}
-            thickness={1.4}
-            speed={0.4}
-            followMouse
-            proximity={300}
-            autoAnimate
+            variant="gradient"
             onClick={() => {
               const customizerEl = document.getElementById("devices");
               if (customizerEl) customizerEl.scrollIntoView({ behavior: "smooth" });
             }}
-            className="font-semibold shadow-lg shadow-orange-950/20"
           >
             Get started
-          </SpecularButton>
+          </PrimaryButton>
 
           {/* Secondary Button */}
           <button

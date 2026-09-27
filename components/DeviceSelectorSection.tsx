@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { FilterDisclosure, FilterItem } from "./filter-disclosure";
 import FlipCard from "./FlipCard";
-import SpecularButton from "./SpecularButton";
+import PrimaryButton from "./PrimaryButton";
 import { GoStar, GoCheckCircle, GoCpu, GoShieldCheck, GoZap, GoArrowRight } from "react-icons/go";
 import { FaLayerGroup, FaMobileAlt, FaLaptop, FaTabletAlt, FaGamepad } from "react-icons/fa";
 
@@ -458,17 +458,15 @@ export default function DeviceSelectorSection() {
                             <GoArrowRight className="w-3.5 h-3.5" />
                           </button>
 
-                          <SpecularButton
-                            tint="#EB7F31"
-                            textColor="#ffffff"
+                          <PrimaryButton
+                            variant="gradient"
                             size="sm"
-                            radius={12}
                             onClick={() => {
                               alert(`Added ${product.name} (${product.deviceModel}) to cart!`);
                             }}
                           >
                             Buy Skin • {product.price}
-                          </SpecularButton>
+                          </PrimaryButton>
                         </div>
                       </div>
                     }

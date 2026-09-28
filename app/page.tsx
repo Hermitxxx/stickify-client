@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen bg-[#0a0908] text-[#faf7f2] font-sans antialiased selection:bg-[#FCAD38] selection:text-[#0a0908]">
       {/* Full-Website Grainient Animated Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden ">
         <Grainient
           color1="#000000"
           color2="#EAB308"

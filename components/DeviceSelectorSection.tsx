@@ -3,9 +3,9 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { FilterDisclosure, FilterItem } from "./filter-disclosure";
-import FlipCard from "./FlipCard";
 import PrimaryButton from "./PrimaryButton";
 import { GoStar, GoCheckCircle, GoCpu, GoShieldCheck, GoZap, GoArrowRight } from "react-icons/go";
+import { IoClose } from "react-icons/io5";
 import { FaLayerGroup, FaMobileAlt, FaLaptop, FaTabletAlt, FaGamepad } from "react-icons/fa";
 
 export interface SkinProduct {
@@ -203,16 +203,11 @@ const DEVICE_FILTERS: FilterItem[] = [
 
 export default function DeviceSelectorSection() {
   const [activeCategory, setActiveCategory] = useState("All Devices");
-  const [activeSwatch, setActiveSwatch] = useState<Record<string, number>>({});
+  const [selectedProduct, setSelectedProduct] = useState<SkinProduct | null>(null);
 
   const filteredProducts = activeCategory === "All Devices"
     ? PRODUCTS
     : PRODUCTS.filter((p) => p.category === activeCategory);
-
-  const handleSwatchClick = (productId: string, swatchIdx: number, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setActiveSwatch((prev) => ({ ...prev, [productId]: swatchIdx }));
-  };
 
   return (
     <section id="devices" className="relative w-full py-20 md:py-32 px-4 sm:px-6 select-none overflow-hidden">
@@ -256,7 +251,7 @@ export default function DeviceSelectorSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-6 text-base sm:text-lg md:text-xl text-[#cabaa9] text-center max-w-2xl mx-auto font-normal leading-relaxed"
         >
-          Filter by hardware, preview 3D tactile materials, and flip cards to inspect micro-laser engineering specifications.
+          Filter by hardware, preview 3D tactile materials, and inspect micro-laser engineering specifications.
         </motion.p>
 
         {/* FilterDisclosure Control */}
@@ -274,10 +269,10 @@ export default function DeviceSelectorSection() {
           />
         </motion.div>
 
-        {/* Product Cards Grid: 2 Column Grid Layout */}
+        {/* Product Cards Grid: 3-Column Layout */}
         <motion.div
           layout
-          className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-10 max-w-6xl mx-auto items-center justify-items-center"
+          className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto items-stretch"
         >
           <AnimatePresence mode="popLayout">
             {filteredProducts.map((product) => {
@@ -285,201 +280,149 @@ export default function DeviceSelectorSection() {
                 <motion.div
                   key={product.id}
                   layout
-                  initial={{ opacity: 0, y: 30, scale: 0.96 }}
+                  initial={{ opacity: 0, y: 24, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full flex justify-center"
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  className="w-full flex"
                 >
-                  <FlipCard
-                    width={540}
-                    height={420}
-                    radius={24}
-                    background="#131110"
-                    shadow
-                    shadowColor="#000000"
-                    shadowOpacity={0.65}
-                    hoverScale={1.02}
-                    stiffness={160}
-                    damping={18}
-                    glareOpacity={0.22}
-                    className="w-full max-w-[540px] shadow-2xl transition-all"
-                    front={
-                      <div className="relative w-full h-full overflow-hidden flex flex-col justify-between p-6">
-                        {/* Front Background Image */}
-                        <img
-                          src={product.frontImage}
-                          alt={product.name}
-                          loading="lazy"
-                          decoding="async"
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
-                        {/* Gradient Overlays */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-[#0a0908]/50 to-black/60" />
+                  <div className="group relative flex flex-col justify-between w-full rounded-2xl border border-white/10 bg-[#131110]/90 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#FCAD38]/40 hover:shadow-2xl hover:shadow-black/70 backdrop-blur-md">
+                    {/* Product Image */}
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-[#0a0908]">
+                      <img
+                        src={product.frontImage}
+                        alt={product.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
 
-                        {/* Top Header Row */}
-                        <div className="relative z-10 flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            {product.badge && (
-                              <span className="px-3 py-1 rounded-full bg-[#E45742] text-[#faf7f2] font-mono text-[10px] font-bold tracking-wider uppercase shadow-md">
-                                {product.badge}
-                              </span>
-                            )}
-                            <span className="px-3 py-1 rounded-full bg-black/60 text-white/90 font-sans text-[11px] font-medium backdrop-blur-md">
-                              {product.deviceModel}
-                            </span>
-                          </div>
-
-                          {/* Rating */}
-                          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 text-[#FCAD38] text-xs font-semibold backdrop-blur-md">
-                            <GoStar className="w-3.5 h-3.5 fill-[#FCAD38]" />
-                            <span>{product.rating}</span>
-                            <span className="text-[#cabaa9] text-[10px]">({product.reviewsCount})</span>
-                          </div>
-                        </div>
-
-                        {/* Bottom Content Area */}
-                        <div className="relative z-10 space-y-3 pt-12">
-                          <div className="flex items-end justify-between">
-                            <div>
-                              <p className="text-xs font-mono tracking-wider text-[#FCAD38] uppercase">
-                                {product.category} Series
-                              </p>
-                              <h3 className="text-2xl font-bold text-[#faf7f2] tracking-tight mt-0.5">
-                                {product.name}
-                              </h3>
-                              <p className="text-sm text-[#cabaa9] font-normal mt-1">
-                                {product.tagline}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <span className="text-2xl font-black text-[#faf7f2] tracking-tight font-sans">
-                                {product.price}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Interactive Swatch & Flip Hint */}
-                          <div className="pt-3 flex items-center justify-between border-t border-white/10">
-                            <div className="flex items-center gap-2">
-                              {product.swatches.map((color, idx) => (
-                                <button
-                                  key={idx}
-                                  onClick={(e) => handleSwatchClick(product.id, idx, e)}
-                                  className={`w-4 h-4 rounded-full border transition-all ${
-                                    (activeSwatch[product.id] || 0) === idx
-                                      ? "border-[#FCAD38] scale-125 shadow-md"
-                                      : "border-transparent opacity-70 hover:opacity-100"
-                                  }`}
-                                  style={{ backgroundColor: color }}
-                                  title="Texture Variant"
-                                />
-                              ))}
-                            </div>
-
-                            <span className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FCAD38] bg-[#FCAD38]/10 px-3 py-1 rounded-full backdrop-blur-md">
-                              <svg className="w-3.5 h-3.5 animate-spin-slow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.035 8.035 0 01-15.357-2m15.357 2H15" />
-                              </svg>
-                              Click or Drag to Flip
-                            </span>
-                          </div>
-                        </div>
+                    {/* Content: Name & Price */}
+                    <div className="mt-4 flex flex-col flex-1 justify-between">
+                      <div>
+                        <h3 className="text-lg font-bold tracking-tight text-[#faf7f2] group-hover:text-[#FCAD38] transition-colors leading-snug">
+                          {product.name}
+                        </h3>
+                        <p className="mt-1 text-xl font-extrabold text-[#FCAD38]">
+                          {product.price}
+                        </p>
                       </div>
-                    }
-                    back={
-                      <div className="relative w-full h-full overflow-hidden p-6 flex flex-col justify-between bg-[#131110]">
-                        {/* Detailed Back Image */}
-                        <img
-                          src={product.backImage}
-                          alt={`${product.name} macro details`}
-                          loading="lazy"
-                          decoding="async"
-                          className="absolute inset-0 w-full h-full object-cover opacity-20"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#131110]/90 via-[#131110]/95 to-[#0a0908]" />
 
-                        {/* Top Header */}
-                        <div className="relative z-10 flex items-center justify-between border-b border-white/10 pb-3">
-                          <div>
-                            <span className="text-[11px] font-mono tracking-widest text-[#FCAD38] uppercase">
-                              TECH SPECIFICATIONS
-                            </span>
-                            <h4 className="text-xl font-bold text-white tracking-tight">
-                              {product.name}
-                            </h4>
-                          </div>
-                          <span className="text-xs font-medium px-2.5 py-1 rounded-md bg-[#201c1a] text-[#cabaa9]">
-                            0.05mm Fit
-                          </span>
-                        </div>
-
-                        {/* Specs Grid */}
-                        <div className="relative z-10 grid grid-cols-2 gap-3 my-3">
-                          <div className="p-2.5 rounded-xl bg-[#201c1a]/70 flex items-start gap-2.5">
-                            <GoCpu className="w-4 h-4 text-[#FCAD38] shrink-0 mt-0.5" />
-                            <div>
-                              <p className="text-[10px] text-[#cabaa9] uppercase font-mono">Material</p>
-                              <p className="text-xs font-medium text-[#faf7f2] leading-snug">{product.specs.material}</p>
-                            </div>
-                          </div>
-
-                          <div className="p-2.5 rounded-xl bg-[#201c1a]/70 flex items-start gap-2.5">
-                            <GoShieldCheck className="w-4 h-4 text-[#E45742] shrink-0 mt-0.5" />
-                            <div>
-                              <p className="text-[10px] text-[#cabaa9] uppercase font-mono">Cut Precision</p>
-                              <p className="text-xs font-medium text-[#faf7f2] leading-snug">{product.specs.precision}</p>
-                            </div>
-                          </div>
-
-                          <div className="p-2.5 rounded-xl bg-[#201c1a]/70 flex items-start gap-2.5">
-                            <GoCheckCircle className="w-4 h-4 text-[#972828] shrink-0 mt-0.5" />
-                            <div>
-                              <p className="text-[10px] text-[#cabaa9] uppercase font-mono">Protection</p>
-                              <p className="text-xs font-medium text-[#faf7f2] leading-snug">{product.specs.protection}</p>
-                            </div>
-                          </div>
-
-                          <div className="p-2.5 rounded-xl bg-[#201c1a]/70 flex items-start gap-2.5">
-                            <GoZap className="w-4 h-4 text-[#FCAD38] shrink-0 mt-0.5" />
-                            <div>
-                              <p className="text-[10px] text-[#cabaa9] uppercase font-mono">Air Release</p>
-                              <p className="text-xs font-medium text-[#faf7f2] leading-snug">{product.specs.airRelease}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Bottom Actions Bar */}
-                        <div className="relative z-10 pt-2 border-t border-white/10 flex items-center justify-between gap-3">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              alert(`Customize ${product.name} in 3D Studio coming soon!`);
-                            }}
-                            className="px-4 py-2.5 rounded-xl bg-[#201c1a] hover:bg-[#322b27] text-[#faf7f2] text-xs font-semibold transition-all flex items-center gap-1.5"
-                          >
-                            <span>3D Studio</span>
-                            <GoArrowRight className="w-3.5 h-3.5" />
-                          </button>
-
-                          <PrimaryButton
-                            variant="gradient"
-                            size="sm"
-                            onClick={() => {
-                              alert(`Added ${product.name} (${product.deviceModel}) to cart!`);
-                            }}
-                          >
-                            Buy Skin • {product.price}
-                          </PrimaryButton>
-                        </div>
-                      </div>
-                    }
-                  />
+                      {/* Button to See Details */}
+                      <button
+                        onClick={() => setSelectedProduct(product)}
+                        className="mt-4 w-full rounded-xl bg-white/[0.06] py-2.5 text-sm font-semibold text-[#faf7f2] border border-white/10 transition-all duration-300 hover:bg-[#FCAD38] hover:text-[#0a0908] hover:border-[#FCAD38] flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <span>See details</span>
+                        <GoArrowRight className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
                 </motion.div>
               );
             })}
           </AnimatePresence>
         </motion.div>
+
+        {/* Product Details Modal */}
+        <AnimatePresence>
+          {selectedProduct && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedProduct(null)}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0, y: 16 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 16 }}
+                transition={{ duration: 0.25 }}
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#131110] p-6 shadow-2xl overflow-hidden"
+              >
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedProduct(null)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-[#cabaa9] hover:text-white transition-colors cursor-pointer"
+                  aria-label="Close details"
+                >
+                  <IoClose className="w-5 h-5" />
+                </button>
+
+                {/* Modal Image */}
+                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#0a0908] mb-4">
+                  <img
+                    src={selectedProduct.frontImage}
+                    alt={selectedProduct.name}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+
+                {/* Modal Title & Price */}
+                <div className="flex items-start justify-between gap-4 mb-2">
+                  <div>
+                    <span className="text-xs font-mono uppercase text-[#FCAD38] tracking-wider block mb-1">
+                      {selectedProduct.category} Series • {selectedProduct.deviceModel}
+                    </span>
+                    <h3 className="text-2xl font-bold text-white tracking-tight">
+                      {selectedProduct.name}
+                    </h3>
+                  </div>
+                  <span className="text-2xl font-black text-[#FCAD38] shrink-0">
+                    {selectedProduct.price}
+                  </span>
+                </div>
+
+                <p className="text-sm text-[#cabaa9] mb-4">
+                  {selectedProduct.tagline}
+                </p>
+
+                {/* Specifications Grid */}
+                <div className="grid grid-cols-2 gap-2.5 mb-6 text-xs">
+                  <div className="p-2.5 rounded-lg bg-[#201c1a] border border-white/5">
+                    <span className="text-[#9c8b7c] font-mono text-[10px] uppercase block">Material</span>
+                    <span className="text-[#faf7f2] font-medium leading-snug">{selectedProduct.specs.material}</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-[#201c1a] border border-white/5">
+                    <span className="text-[#9c8b7c] font-mono text-[10px] uppercase block">Precision</span>
+                    <span className="text-[#faf7f2] font-medium leading-snug">{selectedProduct.specs.precision}</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-[#201c1a] border border-white/5">
+                    <span className="text-[#9c8b7c] font-mono text-[10px] uppercase block">Protection</span>
+                    <span className="text-[#faf7f2] font-medium leading-snug">{selectedProduct.specs.protection}</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-[#201c1a] border border-white/5">
+                    <span className="text-[#9c8b7c] font-mono text-[10px] uppercase block">Air Release</span>
+                    <span className="text-[#faf7f2] font-medium leading-snug">{selectedProduct.specs.airRelease}</span>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                  <button
+                    onClick={() => setSelectedProduct(null)}
+                    className="px-4 py-2.5 rounded-xl text-sm font-medium text-[#cabaa9] hover:text-white transition-colors cursor-pointer"
+                  >
+                    Close
+                  </button>
+                  <PrimaryButton
+                    variant="gradient"
+                    size="sm"
+                    onClick={() => {
+                      alert(`Added ${selectedProduct.name} to cart!`);
+                      setSelectedProduct(null);
+                    }}
+                  >
+                    Buy Skin • {selectedProduct.price}
+                  </PrimaryButton>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );

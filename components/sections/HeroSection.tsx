@@ -1,63 +1,13 @@
 "use client";
 
 import { motion } from "motion/react";
-import CardNav, { CardNavItem } from "@/components/layout/CardNav";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SecondaryButton from "@/components/ui/SecondaryButton";
 import { GoArrowRight } from "react-icons/go";
 
-const NAV_ITEMS: CardNavItem[] = [
-  {
-    label: "Skins & Materials",
-    bgColor: "var(--color-ink-900)",
-    textColor: "var(--color-ink-50)",
-    links: [
-      { label: "Textured Leather", href: "#skins", ariaLabel: "Textured Leather Skins" },
-      { label: "Cyber Carbon Fiber", href: "#skins", ariaLabel: "Cyber Carbon Skins" },
-      { label: "Matte & Gloss Finish", href: "#skins", ariaLabel: "Matte Finish Skins" },
-      { label: "Iridescent Holographic", href: "#skins", ariaLabel: "Holographic Skins" },
-    ],
-  },
-  {
-    label: "Supported Devices",
-    bgColor: "var(--color-ink-800)",
-    textColor: "var(--color-ink-50)",
-    links: [
-      { label: "iPhone & Android", href: "#devices", ariaLabel: "Smartphone Skins" },
-      { label: "MacBook & Laptops", href: "#devices", ariaLabel: "Laptop Skins" },
-      { label: "iPad & Tablets", href: "#devices", ariaLabel: "Tablet Skins" },
-      { label: "Gaming Consoles & Controllers", href: "#devices", ariaLabel: "Console Skins" },
-    ],
-  },
-  {
-    label: "Explore Stickify",
-    bgColor: "var(--color-ink-700)",
-    textColor: "var(--color-ink-50)",
-    links: [
-      { label: "3D Customizer Studio", href: "#customizer", ariaLabel: "3D Customizer Studio" },
-      { label: "Precision Fit Guarantee", href: "#guarantee", ariaLabel: "Precision Fit Guarantee" },
-      { label: "Easy Installation Video", href: "#install", ariaLabel: "Installation Video" },
-      { label: "Customer Showcase Gallery", href: "#showcase", ariaLabel: "Customer Gallery" },
-    ],
-  },
-];
-
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-transparent text-fg select-none">
-
-      {/* Floating Card Navigation Bar */}
-      <CardNav
-        logo="/stickify-logo.svg"
-        logoAlt="Stickify Logo"
-        items={NAV_ITEMS}
-        baseColor="rgba(19, 17, 16, 0.88)"
-        menuColor="var(--color-ink-50)"
-        buttonBgColor="var(--color-orange)"
-        buttonTextColor="var(--color-ink-950)"
-        ease="power3.out"
-      />
-
       {/* Main Hero Content */}
       <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pt-36 pb-24 md:pt-44 md:pb-32 flex flex-col items-center text-center">
         {/* Top Feature Pill Badge */}

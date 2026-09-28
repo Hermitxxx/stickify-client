@@ -1,3 +1,4 @@
+import CardNav from "@/components/layout/CardNav";
 import HeroSection from "@/components/sections/HeroSection";
 import DeviceSelectorSection from "@/components/sections/DeviceSelectorSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
@@ -8,6 +9,8 @@ import Grainient from "@/components/motion/Grainient";
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-bg text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
+      {/* Sticky Global Navigation */}
+      <CardNav />
       {/* Full-Website Grainient Animated Background */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden ">
         <Grainient

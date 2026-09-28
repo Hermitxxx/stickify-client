@@ -13,6 +13,18 @@
       "skillPath": "skills/find-skills/SKILL.md",
       "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
     },
+    "mern-stack-architecture": {
+      "source": "manish1803/nextjs-fullstack-skills",
+      "sourceType": "github",
+      "skillPath": "skills/02-fullstack-backend/mern-stack-architecture/SKILL.md",
+      "computedHash": "94b4cc4e9a1adcd1633cee06fcba5758b22547eaf99e6f0d4d8f2512a871c3cf"
+    },
+    "mongoose-mongodb": {
+      "source": "pluginagentmarketplace/custom-plugin-nodejs",
+      "sourceType": "github",
+      "skillPath": "skills/mongoose-mongodb/SKILL.md",
+      "computedHash": "f5fd5d7ec4a82dff2e0282fec53e8c5b55e59b689cf717377e91331be09c80eb"
+    },
     "prisma-mongodb-upgrade": {
       "source": "prisma/skills",
       "sourceType": "github",
@@ -24,6 +36,12 @@
       "sourceType": "github",
       "skillPath": "engineering-team/skills/senior-frontend/SKILL.md",
       "computedHash": "e106cfe8f4d644c3b4d8177abde66e34e0f3f83cae114038715fa7aa4a06d57d"
+    },
+    "stitch-design-taste": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/stitch-skill/SKILL.md",
+      "computedHash": "c96b580192b34167efa01f460bbc669ff4315cf97f3cf6ff85ded8029aa720b8"
     }
   }
 }

@@ -3,3 +3,6 @@ export * from "./SecondaryButton";
 export * from "./ctabutton";
 export * from "./card-split-accordian";
 export * from "./filter-disclosure";
+export * from "./input";
+export * from "./label";
+export * from "./card";

@@ -339,7 +339,7 @@ const Grainient: React.FC<GrainientProps> = ({
     const ctx = ctxMap.get(container);
     if (!ctx) return;
     const { program } = ctx;
-    const u = program.uniforms as Record<string, { value: any }>;
+    const u = program.uniforms as Record<string, { value: unknown }>;
 
     u.uTimeSpeed.value      = timeSpeed;
     u.uColorBalance.value   = colorBalance;

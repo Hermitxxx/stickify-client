@@ -9,25 +9,25 @@ export default function Home() {
   return (
     <main className="relative min-h-screen bg-[#0a0908] text-[#faf7f2] font-sans antialiased selection:bg-[#FCAD38] selection:text-[#0a0908]">
       {/* Full-Website Grainient Animated Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden opacity-80">
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <Grainient
-          color1="#0a0908"
-          color2="#fcad38"
-          color3="#972828"
-          timeSpeed={0.35}
-          colorBalance={-0.01}
+          color1="#000000"
+          color2="#EAB308"
+          color3="#000000"
+          timeSpeed={0.25}
+          colorBalance={-0.08}
           warpStrength={1}
-          warpFrequency={5.2}
-          warpSpeed={2.2}
+          warpFrequency={5}
+          warpSpeed={2}
           warpAmplitude={50}
-          blendAngle={116}
+          blendAngle={3}
           blendSoftness={0.05}
-          rotationAmount={650}
-          noiseScale={2.2}
-          grainAmount={0.25}
+          rotationAmount={500}
+          noiseScale={2}
+          grainAmount={0.1}
           grainScale={2}
           grainAnimated={false}
-          contrast={1.3}
+          contrast={1.5}
           gamma={1}
           saturation={1}
           centerX={0}

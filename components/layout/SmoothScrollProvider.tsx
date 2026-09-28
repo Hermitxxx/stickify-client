@@ -8,10 +8,10 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     <ReactLenis
       root
       options={{
-        duration: 1.1,
-        easing: (t: number) => 1 - Math.pow(1 - t, 3),
+        duration: 0.9,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
-        touchMultiplier: 1.5,
+        syncTouch: false,
       }}
     >
       {children}

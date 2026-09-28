@@ -1,15 +1,16 @@
 "use client";
 
 import React from "react";
+import { Reveal } from "./motion/Reveal";
 
 export default function Footer() {
   return (
-    <footer className="relative w-full bg-[#050505] text-[#faf7f2] pt-20 pb-10 px-6 md:px-12 lg:px-16 overflow-hidden border-t border-white/10 select-none">
+    <footer className="relative w-full bg-[#050505]/95 backdrop-blur-xl text-[#faf7f2] pt-20 pb-10 px-6 md:px-12 lg:px-16 overflow-hidden border-t border-white/10 select-none">
       <div className="max-w-7xl mx-auto flex flex-col justify-between min-h-[500px]">
         {/* Top Info & Navigation Grid matching reference layout */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12 pt-4">
           {/* Left Column: Location & Contact */}
-          <div className="md:col-span-5 flex flex-col gap-8">
+          <Reveal direction="up" delay={0.05} className="md:col-span-5 flex flex-col gap-8">
             {/* Location Block */}
             <div>
               <p className="text-xs font-mono uppercase tracking-widest text-[#9c8b7c] mb-3">
@@ -31,10 +32,10 @@ export default function Footer() {
                 +1 (800) 587-9439
               </p>
             </div>
-          </div>
+          </Reveal>
 
           {/* Middle Column: Links */}
-          <div className="md:col-span-4 flex flex-col">
+          <Reveal direction="up" delay={0.15} className="md:col-span-4 flex flex-col">
             <p className="text-xs font-mono uppercase tracking-widest text-[#9c8b7c] mb-5">
               Links
             </p>
@@ -55,10 +56,10 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
 
           {/* Right Column: Socials */}
-          <div className="md:col-span-3 flex flex-col">
+          <Reveal direction="up" delay={0.25} className="md:col-span-3 flex flex-col">
             <p className="text-xs font-mono uppercase tracking-widest text-[#9c8b7c] mb-5">
               Socials
             </p>
@@ -81,25 +82,25 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
         </div>
 
         {/* Giant Brand Typography Watermark matching reference */}
-        <div className="mt-16 md:mt-24 overflow-hidden py-4 border-t border-white/5">
+        <Reveal direction="up" delay={0.3} duration={0.8} className="mt-16 md:mt-24 overflow-hidden py-4 border-t border-white/5">
           <h1 className="text-[17vw] leading-[0.8] font-black tracking-tighter text-center select-none bg-gradient-to-b from-white/20 via-white/10 to-white/0 bg-clip-text text-transparent">
             stickify
           </h1>
-        </div>
+        </Reveal>
 
         {/* Bottom Copyright Bar */}
-        <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#9c8b7c]">
+        <Reveal direction="up" delay={0.35} className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#9c8b7c]">
           <p>© 2026 Stickify Inc. All rights reserved.</p>
           <p className="flex items-center gap-2">
             <span>Built with 3M Architectural Vinyl</span>
             <span>•</span>
             <span>0.05mm Fit Calibration</span>
           </p>
-        </div>
+        </Reveal>
       </div>
     </footer>
   );

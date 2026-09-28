@@ -89,6 +89,8 @@ export default function CtaSection() {
             <img
               src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80"
               alt="Stickify Precision Custom Skin Studio"
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-transparent to-black/30" />

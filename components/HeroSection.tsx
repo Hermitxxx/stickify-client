@@ -3,7 +3,6 @@
 import { motion } from "motion/react";
 import CardNav, { CardNavItem } from "./CardNav";
 import PrimaryButton from "./PrimaryButton";
-import HeroBeams from "./HeroBeams";
 import { GoArrowRight } from "react-icons/go";
 
 const NAV_ITEMS: CardNavItem[] = [
@@ -42,20 +41,9 @@ const NAV_ITEMS: CardNavItem[] = [
   },
 ];
 
-const AMBER_LEATHER_COLOR = "#FCAD38";
-
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-[#0a0908] text-[#faf7f2] select-none">
-      {/* 3D Radiant Beams Background */}
-      <HeroBeams className="opacity-90" />
-
-      {/* Subtle Background Gradients & Ambient Glow */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0a0908]/70 via-transparent to-[#0a0908]" />
-      <div 
-        className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] rounded-full blur-[140px] opacity-25 transition-all duration-700"
-        style={{ background: AMBER_LEATHER_COLOR }}
-      />
+    <section className="relative min-h-screen w-full flex flex-col justify-center items-center overflow-hidden bg-transparent text-[#faf7f2] select-none">
 
       {/* Floating Card Navigation Bar */}
       <CardNav
@@ -141,14 +129,6 @@ export default function HeroSection() {
             <GoArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
           </button>
         </motion.div>
-      </div>
-
-      {/* Bottom Status Bar */}
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 pb-8 flex items-center justify-between">
-        <div className="flex items-center gap-3 text-xs text-[#6b5d51]">
-          <span className="inline-block h-2 w-2 rounded-full bg-[#4a8f5c] animate-pulse" />
-          <span>Precision 3M Vinyl • Amber Leather Finish • 0.23mm Thickness</span>
-        </div>
       </div>
     </section>
   );

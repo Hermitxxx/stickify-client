@@ -193,7 +193,7 @@ const Grainient: React.FC<GrainientProps> = ({
         webgl: 2,
         alpha: true,
         antialias: false,
-        dpr: Math.min(window.devicePixelRatio || 1, 2)
+        dpr: Math.min(window.devicePixelRatio || 1, 1)
       });
     } catch {
       try {
@@ -201,7 +201,7 @@ const Grainient: React.FC<GrainientProps> = ({
           webgl: 1,
           alpha: true,
           antialias: false,
-          dpr: Math.min(window.devicePixelRatio || 1, 2)
+          dpr: Math.min(window.devicePixelRatio || 1, 1)
         });
       } catch (e) {
         console.warn('Grainient: WebGL context creation failed on device', e);
@@ -266,8 +266,12 @@ const Grainient: React.FC<GrainientProps> = ({
 
     const setSize = () => {
       const rect = container.getBoundingClientRect();
-      const w = Math.max(1, Math.floor(rect.width));
-      const h = Math.max(1, Math.floor(rect.height));
+      const rawW = Math.max(1, Math.floor(rect.width));
+      const rawH = Math.max(1, Math.floor(rect.height));
+      // Cap maximum internal render buffer to 1920x1080 to prevent GPU fill-rate exhaustion
+      const scale = Math.min(1, 1920 / rawW, 1080 / rawH);
+      const w = Math.round(rawW * scale);
+      const h = Math.round(rawH * scale);
       renderer.setSize(w, h);
       const res = (program.uniforms.iResolution as { value: Float32Array }).value;
       res[0] = gl.drawingBufferWidth;
@@ -283,11 +287,18 @@ const Grainient: React.FC<GrainientProps> = ({
     let isVisible = true;
     let isPageVisible = !document.hidden;
     const t0 = performance.now();
+    let lastTime = 0;
+    const targetFps = 35;
+    const frameInterval = 1000 / targetFps;
 
     const loop = (t: number) => {
+      raf = requestAnimationFrame(loop);
+      const delta = t - lastTime;
+      if (delta < frameInterval) return;
+      lastTime = t - (delta % frameInterval);
+
       (program.uniforms.iTime as { value: number }).value = (t - t0) * 0.001;
       renderer.render({ scene: mesh });
-      raf = requestAnimationFrame(loop);
     };
 
     const tryStart = () => {

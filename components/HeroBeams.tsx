@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 const Beams = dynamic(() => import('./Beams'), { ssr: false });
@@ -9,9 +10,28 @@ interface HeroBeamsProps {
 }
 
 export default function HeroBeams({ className = "" }: HeroBeamsProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
+    <div ref={containerRef} className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}>
       <Beams
+        active={isVisible}
         beamWidth={3}
         beamHeight={30}
         beamNumber={18}

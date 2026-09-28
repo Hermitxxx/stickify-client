@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { FilterDisclosure, FilterItem } from "./filter-disclosure";
-import PrimaryButton from "./PrimaryButton";
+import { FilterDisclosure, FilterItem } from "@/components/ui/filter-disclosure";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import SecondaryButton from "@/components/ui/SecondaryButton";
 import { GoStar, GoCheckCircle, GoCpu, GoShieldCheck, GoZap, GoArrowRight } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
 import { FaLayerGroup, FaMobileAlt, FaLaptop, FaTabletAlt, FaGamepad } from "react-icons/fa";
@@ -212,7 +213,7 @@ export default function DeviceSelectorSection() {
   return (
     <section id="devices" className="relative w-full py-20 md:py-32 px-4 sm:px-6 select-none overflow-hidden">
       {/* Background ambient glow matching brand tokens */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-[#EB7F31]/10 blur-[160px] opacity-30" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-orange/10 blur-[160px] opacity-30" />
 
       <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center">
         {/* Eyebrow Pill */}
@@ -221,10 +222,10 @@ export default function DeviceSelectorSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#131110]/90 px-4 py-1.5 backdrop-blur-md"
+          className="mb-6 inline-flex items-center gap-2 rounded-full bg-bg-elevated/90 px-4 py-1.5 backdrop-blur-md"
         >
-          <span className="w-2 h-2 rounded-full bg-[#FCAD38] animate-pulse" />
-          <span className="text-xs font-bold tracking-wider text-[#cabaa9] uppercase">
+          <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
+          <span className="text-xs font-bold tracking-wider text-fg-muted uppercase">
             3M PRECISION ENGINEERED SKINS
           </span>
         </motion.div>
@@ -235,10 +236,10 @@ export default function DeviceSelectorSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-[#faf7f2] text-center max-w-4xl mx-auto leading-[1.08]"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-fg text-center max-w-4xl mx-auto leading-[1.08]"
         >
           Pick your device.{" "}
-          <span className="bg-gradient-to-r from-[#FCAD38] via-[#EB7F31] to-[#E45742] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-gold via-orange to-red bg-clip-text text-transparent">
             Elevate your style.
           </span>
         </motion.h2>
@@ -249,7 +250,7 @@ export default function DeviceSelectorSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-6 text-base sm:text-lg md:text-xl text-[#cabaa9] text-center max-w-2xl mx-auto font-normal leading-relaxed"
+          className="mt-6 text-base sm:text-lg md:text-xl text-fg-muted text-center max-w-2xl mx-auto font-normal leading-relaxed"
         >
           Filter by hardware, preview 3D tactile materials, and inspect micro-laser engineering specifications.
         </motion.p>
@@ -286,9 +287,9 @@ export default function DeviceSelectorSection() {
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className="w-full flex"
                 >
-                  <div className="group relative flex flex-col justify-between w-full rounded-2xl border border-white/10 bg-[#131110]/90 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[#FCAD38]/40 hover:shadow-2xl hover:shadow-black/70 backdrop-blur-md">
+                  <div className="group relative flex flex-col justify-between w-full rounded-2xl border border-white/10 bg-bg-elevated/90 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-2xl hover:shadow-black/70 backdrop-blur-md">
                     {/* Product Image */}
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-[#0a0908]">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-bg">
                       <img
                         src={product.frontImage}
                         alt={product.name}
@@ -301,22 +302,24 @@ export default function DeviceSelectorSection() {
                     {/* Content: Name & Price */}
                     <div className="mt-4 flex flex-col flex-1 justify-between">
                       <div>
-                        <h3 className="text-lg font-bold tracking-tight text-[#faf7f2] group-hover:text-[#FCAD38] transition-colors leading-snug">
+                        <h3 className="text-lg font-bold tracking-tight text-fg group-hover:text-gold transition-colors leading-snug">
                           {product.name}
                         </h3>
-                        <p className="mt-1 text-xl font-extrabold text-[#FCAD38]">
+                        <p className="mt-1 text-xl font-extrabold text-gold">
                           {product.price}
                         </p>
                       </div>
 
                       {/* Button to See Details */}
-                      <button
+                      <SecondaryButton
+                        variant="subtle"
+                        size="sm"
+                        className="mt-4 w-full"
+                        iconRight={<GoArrowRight className="h-4 w-4" />}
                         onClick={() => setSelectedProduct(product)}
-                        className="mt-4 w-full rounded-xl bg-white/[0.06] py-2.5 text-sm font-semibold text-[#faf7f2] border border-white/10 transition-all duration-300 hover:bg-[#FCAD38] hover:text-[#0a0908] hover:border-[#FCAD38] flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <span>See details</span>
-                        <GoArrowRight className="h-4 w-4" />
-                      </button>
+                        See details
+                      </SecondaryButton>
                     </div>
                   </div>
                 </motion.div>
@@ -341,19 +344,19 @@ export default function DeviceSelectorSection() {
                 exit={{ scale: 0.95, opacity: 0, y: 16 }}
                 transition={{ duration: 0.25 }}
                 onClick={(e) => e.stopPropagation()}
-                className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-[#131110] p-6 shadow-2xl overflow-hidden"
+                className="relative w-full max-w-lg rounded-2xl border border-white/10 bg-bg-elevated p-6 shadow-2xl overflow-hidden"
               >
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedProduct(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-[#cabaa9] hover:text-white transition-colors cursor-pointer"
+                  className="absolute top-4 right-4 p-2 rounded-full bg-white/5 hover:bg-white/10 text-fg-muted hover:text-fg transition-colors cursor-pointer"
                   aria-label="Close details"
                 >
                   <IoClose className="w-5 h-5" />
                 </button>
 
                 {/* Modal Image */}
-                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-[#0a0908] mb-4">
+                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-bg mb-4">
                   <img
                     src={selectedProduct.frontImage}
                     alt={selectedProduct.name}
@@ -364,50 +367,51 @@ export default function DeviceSelectorSection() {
                 {/* Modal Title & Price */}
                 <div className="flex items-start justify-between gap-4 mb-2">
                   <div>
-                    <span className="text-xs font-mono uppercase text-[#FCAD38] tracking-wider block mb-1">
+                    <span className="text-xs font-mono uppercase text-gold tracking-wider block mb-1">
                       {selectedProduct.category} Series • {selectedProduct.deviceModel}
                     </span>
-                    <h3 className="text-2xl font-bold text-white tracking-tight">
+                    <h3 className="text-2xl font-bold text-fg tracking-tight">
                       {selectedProduct.name}
                     </h3>
                   </div>
-                  <span className="text-2xl font-black text-[#FCAD38] shrink-0">
+                  <span className="text-2xl font-black text-gold shrink-0">
                     {selectedProduct.price}
                   </span>
                 </div>
 
-                <p className="text-sm text-[#cabaa9] mb-4">
+                <p className="text-sm text-fg-muted mb-4">
                   {selectedProduct.tagline}
                 </p>
 
                 {/* Specifications Grid */}
                 <div className="grid grid-cols-2 gap-2.5 mb-6 text-xs">
-                  <div className="p-2.5 rounded-lg bg-[#201c1a] border border-white/5">
-                    <span className="text-[#9c8b7c] font-mono text-[10px] uppercase block">Material</span>
-                    <span className="text-[#faf7f2] font-medium leading-snug">{selectedProduct.specs.material}</span>
+                  <div className="p-2.5 rounded-lg bg-ink-800 border border-white/5">
+                    <span className="text-ink-400 font-mono text-[10px] uppercase block">Material</span>
+                    <span className="text-fg font-medium leading-snug">{selectedProduct.specs.material}</span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[#201c1a] border border-white/5">
-                    <span className="text-[#9c8b7c] font-mono text-[10px] uppercase block">Precision</span>
-                    <span className="text-[#faf7f2] font-medium leading-snug">{selectedProduct.specs.precision}</span>
+                  <div className="p-2.5 rounded-lg bg-ink-800 border border-white/5">
+                    <span className="text-ink-400 font-mono text-[10px] uppercase block">Precision</span>
+                    <span className="text-fg font-medium leading-snug">{selectedProduct.specs.precision}</span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[#201c1a] border border-white/5">
-                    <span className="text-[#9c8b7c] font-mono text-[10px] uppercase block">Protection</span>
-                    <span className="text-[#faf7f2] font-medium leading-snug">{selectedProduct.specs.protection}</span>
+                  <div className="p-2.5 rounded-lg bg-ink-800 border border-white/5">
+                    <span className="text-ink-400 font-mono text-[10px] uppercase block">Protection</span>
+                    <span className="text-fg font-medium leading-snug">{selectedProduct.specs.protection}</span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-[#201c1a] border border-white/5">
-                    <span className="text-[#9c8b7c] font-mono text-[10px] uppercase block">Air Release</span>
-                    <span className="text-[#faf7f2] font-medium leading-snug">{selectedProduct.specs.airRelease}</span>
+                  <div className="p-2.5 rounded-lg bg-ink-800 border border-white/5">
+                    <span className="text-ink-400 font-mono text-[10px] uppercase block">Air Release</span>
+                    <span className="text-fg font-medium leading-snug">{selectedProduct.specs.airRelease}</span>
                   </div>
                 </div>
 
                 {/* Actions */}
                 <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
-                  <button
+                  <SecondaryButton
+                    variant="ghost"
+                    size="sm"
                     onClick={() => setSelectedProduct(null)}
-                    className="px-4 py-2.5 rounded-xl text-sm font-medium text-[#cabaa9] hover:text-white transition-colors cursor-pointer"
                   >
                     Close
-                  </button>
+                  </SecondaryButton>
                   <PrimaryButton
                     variant="gradient"
                     size="sm"

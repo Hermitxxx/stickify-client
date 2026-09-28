@@ -4,6 +4,7 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 // use your own icon import if react-icons is not available
 import { GoArrowUpRight } from 'react-icons/go';
+import CtaButton from '@/components/ui/ctabutton';
 
 type CardNavLink = {
   label: string;
@@ -198,13 +199,16 @@ const CardNav: React.FC<CardNavProps> = ({
             <img src={logo} alt={logoAlt} className="logo h-[28px]" />
           </div>
 
-          <button
-            type="button"
-            className="card-nav-cta-button hidden md:inline-flex border-0 rounded-[calc(0.75rem-0.2rem)] px-4 items-center h-full font-medium cursor-pointer transition-colors duration-300"
-            style={{ backgroundColor: buttonBgColor, color: buttonTextColor }}
+          <CtaButton
+            variant="nav"
+            className="card-nav-cta-button hidden md:inline-flex h-full"
+            onClick={() => {
+              const devicesEl = document.getElementById("devices");
+              if (devicesEl) devicesEl.scrollIntoView({ behavior: "smooth" });
+            }}
           >
             Get Started
-          </button>
+          </CtaButton>
         </div>
 
         <div

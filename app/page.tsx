@@ -1,13 +1,13 @@
-import HeroSection from "@/components/HeroSection";
-import DeviceSelectorSection from "@/components/DeviceSelectorSection";
-import HowItWorksSection from "@/components/HowItWorksSection";
-import CtaSection from "@/components/CtaSection";
-import Footer from "@/components/Footer";
-import Grainient from "@/components/Grainient";
+import HeroSection from "@/components/sections/HeroSection";
+import DeviceSelectorSection from "@/components/sections/DeviceSelectorSection";
+import HowItWorksSection from "@/components/sections/HowItWorksSection";
+import CtaSection from "@/components/sections/CtaSection";
+import Footer from "@/components/layout/Footer";
+import Grainient from "@/components/motion/Grainient";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-[#0a0908] text-[#faf7f2] font-sans antialiased selection:bg-[#FCAD38] selection:text-[#0a0908]">
+    <main className="relative min-h-screen bg-bg text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
       {/* Full-Website Grainient Animated Background */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden ">
         <Grainient

@@ -19,13 +19,13 @@ const SIZES: Record<"sm" | "md" | "lg", string> = {
 
 const VARIANTS: Record<"primary" | "gradient" | "outline" | "ghost", string> = {
   primary:
-    "bg-[#EB7F31] text-[#0a0908] hover:bg-[#FCAD38] shadow-lg shadow-orange-950/25 border border-white/20 hover:shadow-orange-500/20",
+    "bg-orange text-ink-950 hover:bg-gold shadow-lg shadow-orange/20 border border-white/20 hover:shadow-gold/20",
   gradient:
-    "bg-gradient-to-r from-[#FCAD38] via-[#EB7F31] to-[#E45742] text-[#0a0908] hover:opacity-95 shadow-xl shadow-orange-950/30 border border-white/30 hover:shadow-amber-500/25",
+    "bg-gradient-to-r from-gold via-orange to-red text-ink-950 hover:opacity-95 shadow-xl shadow-orange/25 border border-white/30 hover:shadow-gold/25",
   outline:
-    "border border-[#322b27] bg-[#131110]/90 text-[#faf7f2] hover:bg-[#201c1a] hover:border-[#6b5d51] hover:text-white backdrop-blur-md",
+    "border border-border bg-bg-elevated/90 text-fg hover:bg-ink-800 hover:border-border-strong hover:text-fg backdrop-blur-md",
   ghost:
-    "text-[#faf7f2] hover:text-[#FCAD38] hover:bg-white/5",
+    "text-fg hover:text-gold hover:bg-white/5",
 };
 
 export function PrimaryButton({
@@ -43,7 +43,7 @@ export function PrimaryButton({
       type={type}
       disabled={disabled}
       className={cn(
-        "group relative inline-flex items-center justify-center font-sans select-none overflow-hidden outline-none cursor-pointer transition-all duration-300 active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none disabled:active:scale-100",
+        "group relative inline-flex items-center justify-center font-sans select-none overflow-hidden outline-none cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-40 disabled:pointer-events-none disabled:active:scale-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
         SIZES[size],
         VARIANTS[variant],
         className

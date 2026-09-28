@@ -32,6 +32,17 @@
   --color-accent: #EB7F31;
   --color-accent-strong: #972828;
   --color-accent-soft: #FCAD38;
+  --color-on-accent: #0a0908;
+  --color-danger: #972828;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+  --text-hero: clamp(2.75rem, 6vw, 5.5rem);
+  --text-h1: clamp(2rem, 4vw, 3.5rem);
+  --text-h2: clamp(1.5rem, 2.5vw, 2.25rem);
 
   --font-display: var(--font-sans);
 }
@@ -107,8 +118,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    background-color: #0a0908;
-    color: #faf7f2;
+    background-color: var(--color-ink-950);
+    color: var(--color-ink-50);
     overflow-x: hidden;
   }
   html {
@@ -117,12 +128,12 @@
   }
 }
 
-.text-gradient-brand {
-  background: linear-gradient(135deg, #FCAD38 0%, #EB7F31 40%, #E45742 70%, #972828 100%);
+@utility text-gradient-brand {
+  background-image: linear-gradient(135deg, var(--color-gold) 0%, var(--color-orange) 40%, var(--color-red) 70%, var(--color-maroon) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.bg-gradient-brand {
-  background: linear-gradient(90deg, #972828 0%, #E45742 35%, #EB7F31 70%, #FCAD38 100%);
+@utility bg-gradient-brand {
+  background-image: linear-gradient(90deg, var(--color-maroon) 0%, var(--color-red) 35%, var(--color-orange) 70%, var(--color-gold) 100%);
 }

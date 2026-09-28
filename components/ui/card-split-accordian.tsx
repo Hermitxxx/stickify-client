@@ -151,7 +151,7 @@ const AccordionItem: FC<AccordionItemProps> = ({
             <div className="flex items-center gap-4 md:gap-5">
               {item.icon}
 
-              <span className="text-lg font-bold text-[#faf7f2] md:text-xl lg:text-2xl tracking-tight dark:text-zinc-100">
+              <span className="text-lg font-bold text-fg md:text-xl lg:text-2xl tracking-tight dark:text-zinc-100">
                 {item.title}
               </span>
             </div>
@@ -170,7 +170,7 @@ const AccordionItem: FC<AccordionItemProps> = ({
             className="overflow-hidden will-change-transform"
           >
             <div ref={ref}>
-              <div className="px-6 pb-6 pt-2 md:px-8 md:pb-8 md:pt-3 text-base font-normal leading-relaxed text-[#cabaa9] md:text-lg lg:text-xl dark:text-zinc-300">
+              <div className="px-6 pb-6 pt-2 md:px-8 md:pb-8 md:pt-3 text-base font-normal leading-relaxed text-fg-muted md:text-lg lg:text-xl dark:text-zinc-300">
                 {item.content}
               </div>
             </div>

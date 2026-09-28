@@ -41,10 +41,11 @@ export default function Footer() {
             </p>
             <ul className="flex flex-col gap-3">
               {[
-                { label: "Skins & Materials", href: "#devices" },
-                { label: "Supported Devices", href: "#devices" },
-                { label: "3D Customizer", href: "#devices" },
-                { label: "Precision Guarantee", href: "#how-it-works" },
+                { label: "Products Catalogue", href: "/products" },
+                { label: "Skins & Materials", href: "/#devices" },
+                { label: "Supported Devices", href: "/#devices" },
+                { label: "3D Customizer", href: "/#devices" },
+                { label: "Precision Guarantee", href: "/#how-it-works" },
               ].map((item) => (
                 <li key={item.label}>
                   <a

@@ -75,14 +75,14 @@ const CardNav: React.FC<CardNavProps> = ({
   // Dynamic real navigation cards
   const navItems: CardNavItem[] = [
     {
-      label: "Precision Skins",
+      label: "Sticker Collection",
       bgColor: "var(--color-ink-900)",
       textColor: "var(--color-ink-50)",
       links: [
-        { label: "Phones & Handhelds", href: "/#devices", ariaLabel: "Phone Skins" },
-        { label: "MacBook & Laptops", href: "/#devices", ariaLabel: "Laptop Skins" },
-        { label: "iPad & Tablets", href: "/#devices", ariaLabel: "Tablet Skins" },
-        { label: "Gaming Consoles", href: "/#devices", ariaLabel: "Console Skins" },
+        { label: "All Products Catalogue", href: "/products", ariaLabel: "Browse All Products" },
+        { label: "Phone Artworks", href: "/products?device=Phone", ariaLabel: "Phone Stickers" },
+        { label: "Tablet Artworks", href: "/products?device=Tablet", ariaLabel: "Tablet Stickers" },
+        { label: "Laptop Artworks", href: "/products?device=Laptop", ariaLabel: "Laptop Stickers" },
       ],
     },
     {
@@ -314,8 +314,16 @@ const CardNav: React.FC<CardNavProps> = ({
             </Link>
           </div>
 
-          {/* Dynamic Top Bar Auth Actions */}
-          <div className="flex items-center gap-2">
+          {/* Dynamic Top Bar Navigation & Auth Actions */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Link
+              href="/products"
+              onClick={closeMenu}
+              className="text-xs font-semibold text-fg hover:text-gold transition-colors px-2.5 sm:px-3 py-1.5 rounded-xl hover:bg-white/5 border border-transparent hover:border-border"
+            >
+              Products
+            </Link>
+
             {isPending ? (
               <div className="h-8 w-20 rounded-xl bg-ink-800/80 animate-pulse" />
             ) : session ? (

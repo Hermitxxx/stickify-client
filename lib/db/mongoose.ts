@@ -31,6 +31,7 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      dbName: process.env.MONGODB_DB_NAME || "stickify",
     };
 
     cached.promise = mongoose.connect(mongoUri, opts).then((mongooseInstance) => {

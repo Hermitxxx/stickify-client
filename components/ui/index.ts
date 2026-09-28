@@ -6,3 +6,5 @@ export * from "./filter-disclosure";
 export * from "./input";
 export * from "./label";
 export * from "./card";
+export * from "./badge";
+export * from "./chip";

@@ -8,12 +8,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-[100dvh] w-full flex flex-col justify-between bg-bg text-fg overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
-      {/* Subtle calibrated background ambiance (no purple, no neon) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-gradient-to-b from-maroon/15 via-orange/10 to-transparent blur-3xl opacity-60"
-      />
+    <div className="relative min-h-[100dvh] w-full flex flex-col justify-between text-fg overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
 
       {/* Top minimal bar */}
       <header className="relative z-10 w-full max-w-5xl mx-auto flex items-center justify-between">

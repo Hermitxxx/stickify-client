@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion } from "motion/react";
 import { GoShieldCheck } from "react-icons/go";
 import { HiSparkles } from "react-icons/hi2";
@@ -83,12 +84,12 @@ export default function CtaSection() {
           className="mt-16 w-full max-w-4xl overflow-hidden rounded-3xl border border-white/10 bg-bg-elevated/80 p-3 shadow-2xl backdrop-blur-xl"
         >
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-bg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80"
               alt="Stickify Precision Custom Skin Studio"
-              loading="lazy"
-              decoding="async"
-              className="h-full w-full object-cover transition-transform duration-1000 hover:scale-105"
+              fill
+              sizes="(max-width: 1024px) 100vw, 896px"
+              className="object-cover transition-transform duration-1000 hover:scale-105"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-black/30" />
 

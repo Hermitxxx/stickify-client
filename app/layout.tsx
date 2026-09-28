@@ -36,7 +36,7 @@ export default function RootLayout({
         figtree.variable
       )}
     >
-      <body className="min-h-full flex flex-col bg-[#0a0908] text-[#faf7f2] font-sans selection:bg-[#EB7F31] selection:text-black">
+      <body className="min-h-full flex flex-col bg-bg text-fg font-sans selection:bg-gold selection:text-ink-950">
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

@@ -11,8 +11,9 @@ export default function Home() {
     <main className="relative min-h-screen bg-bg text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
       {/* Sticky Global Navigation */}
       <CardNav />
-      {/* Full-Website Grainient Animated Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden ">
+
+      {/* Full-Website Grainient Animated Background - Home Page Exclusive */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <Grainient
           color1="#000000"
           color2="#EAB308"

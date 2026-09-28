@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { FilterDisclosure, FilterItem } from "@/components/ui/filter-disclosure";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -290,12 +291,12 @@ export default function DeviceSelectorSection() {
                   <div className="group relative flex flex-col justify-between w-full rounded-2xl border border-white/10 bg-bg-elevated/90 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-2xl hover:shadow-black/70 backdrop-blur-md">
                     {/* Product Image */}
                     <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-bg">
-                      <img
+                      <Image
                         src={product.frontImage}
                         alt={product.name}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
 
@@ -357,10 +358,12 @@ export default function DeviceSelectorSection() {
 
                 {/* Modal Image */}
                 <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-bg mb-4">
-                  <img
+                  <Image
                     src={selectedProduct.frontImage}
                     alt={selectedProduct.name}
-                    className="h-full w-full object-cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 500px"
+                    className="object-cover"
                   />
                 </div>
 

@@ -15,12 +15,7 @@ export default async function DashboardPage() {
   const session = await requireAuth("/dashboard");
 
   return (
-    <div className="min-h-[100dvh] w-full bg-bg text-fg px-4 py-8 sm:px-6 lg:px-8">
-      {/* Background ambient lighting */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-gradient-to-b from-maroon/15 via-orange/10 to-transparent blur-3xl opacity-50"
-      />
+    <div className="min-h-[100dvh] w-full text-fg px-4 py-8 sm:px-6 lg:px-8">
 
       <div className="relative z-10 max-w-4xl mx-auto space-y-8">
         {/* Navigation back */}

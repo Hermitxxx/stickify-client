@@ -47,3 +47,44 @@ export async function redirectIfAuthenticated(destination = "/") {
     redirect(destination);
   }
 }
+
+/**
+ * Resolves the user's role from session or database fallback.
+ */
+export async function getUserRole(userId: string): Promise<"admin" | "user"> {
+  try {
+    const { connectToDatabase } = await import("@/lib/db/mongoose");
+    const { default: UserModel } = await import("@/lib/models/user.model");
+    await connectToDatabase();
+    const userDoc: any = await UserModel.findById(userId).lean();
+    if (userDoc?.role === "admin") return "admin";
+  } catch (err) {
+    console.error("Error looking up user role:", err);
+  }
+  return "user";
+}
+
+/**
+ * Enforces role-based authorization on a Server Component or route.
+ * Redirects unauthenticated users to /login and unauthorized roles to /dashboard.
+ */
+export async function requireRole(
+  allowedRole: "admin" | "user" | string[],
+  fallbackUrl = "/dashboard"
+) {
+  const session = await requireAuth();
+  const allowed = Array.isArray(allowedRole) ? allowedRole : [allowedRole];
+
+  // Check role on session object first
+  let userRole = (session.user as any)?.role;
+  if (!userRole) {
+    userRole = await getUserRole(session.user.id);
+  }
+
+  if (!allowed.includes(userRole)) {
+    redirect(fallbackUrl);
+  }
+
+  return { session, role: userRole };
+}
+

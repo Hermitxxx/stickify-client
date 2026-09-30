@@ -8,6 +8,8 @@ import { gsap } from "gsap";
 import { GoArrowUpRight } from "react-icons/go";
 import { LogOut, LayoutDashboard, User, Loader2 } from "lucide-react";
 import { useSession, signOut } from "@/lib/auth/auth-client";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { selectBookmarksCount } from "@/lib/redux/slices/bookmarksSlice";
 
 type CardNavLink = {
   label: string;
@@ -72,6 +74,9 @@ const CardNav: React.FC<CardNavProps> = ({
     }
   };
 
+  const dispatch = useAppDispatch();
+  const bookmarksCount = useAppSelector(selectBookmarksCount);
+
   // Dynamic real navigation cards
   const navItems: CardNavItem[] = [
     {
@@ -102,7 +107,17 @@ const CardNav: React.FC<CardNavProps> = ({
       links: session
         ? [
             { label: "My Dashboard", href: "/dashboard", ariaLabel: "User Dashboard" },
-            { label: "Saved Device Cuts", href: "/dashboard", ariaLabel: "Saved Cuts" },
+            ...((session.user as { role?: string })?.role === "admin"
+              ? [{ label: "Admin Console", href: "/dashboard/admin", ariaLabel: "Admin Console" }]
+              : []),
+            {
+              label:
+                bookmarksCount > 0
+                  ? `Saved Cuts (${bookmarksCount})`
+                  : "Saved Device Cuts",
+              href: "/dashboard",
+              ariaLabel: "Saved Cuts",
+            },
             {
               label: isSigningOut ? "Signing out..." : "Log Out",
               href: "#signout",

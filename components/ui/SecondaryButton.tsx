@@ -47,7 +47,7 @@ export function SecondaryButton({
       type={type}
       disabled={disabled}
       className={cn(
-        "group relative inline-flex items-center justify-center font-sans select-none overflow-hidden cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-40 disabled:pointer-events-none disabled:active:scale-100 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+        "group relative inline-flex items-center justify-center font-sans select-none overflow-hidden cursor-pointer transition-all duration-300 active:scale-95 disabled:opacity-40 disabled:pointer-events-none disabled:active:scale-100 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent whitespace-nowrap shrink-0",
         SIZES[size],
         VARIANTS[variant],
         className
@@ -55,7 +55,7 @@ export function SecondaryButton({
       {...props}
     >
       {icon && <span className="shrink-0 transition-transform duration-300 group-hover:scale-110">{icon}</span>}
-      <span className="relative z-10">{children}</span>
+      <span className="relative z-10 inline-flex items-center gap-2">{children}</span>
       {iconRight && <span className="shrink-0 transition-transform duration-300 group-hover:translate-x-1">{iconRight}</span>}
     </button>
   );

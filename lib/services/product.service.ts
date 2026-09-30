@@ -101,6 +101,7 @@ export async function getProducts(
       ? doc.compatibleDevices
       : [],
     formats: Array.isArray(doc.formats) ? doc.formats : ["PNG"],
+    lemonVariantId: doc.lemonVariantId || undefined,
     createdAt: doc.createdAt ? new Date(doc.createdAt).toISOString() : undefined,
     updatedAt: doc.updatedAt ? new Date(doc.updatedAt).toISOString() : undefined,
   }));
@@ -121,19 +122,24 @@ export async function getProducts(
 export async function getProductBySlug(slug: string): Promise<IProduct | null> {
   await connectToDatabase();
 
-  const doc: any = await ProductModel.findOne({ slug }).lean();
+  const mongoose = (await import("mongoose")).default;
+  let doc = (await ProductModel.findOne({ slug }).lean()) as Record<string, unknown> | null;
+  if (!doc && mongoose.Types.ObjectId.isValid(slug)) {
+    doc = (await ProductModel.findById(slug).lean()) as Record<string, unknown> | null;
+  }
   if (!doc) return null;
 
   return {
-    _id: doc._id.toString(),
-    title: doc.title,
-    slug: doc.slug,
-    description: doc.description,
+    _id: (doc._id as { toString(): string }).toString(),
+    title: (doc.title as string) || "",
+    slug: (doc.slug as string) || "",
+    description: (doc.description as string) || "",
     price: Number(doc.price) || 0,
-    image: doc.image,
-    compatibleDevices: doc.compatibleDevices || [],
-    formats: doc.formats || ["PNG"],
-    createdAt: doc.createdAt ? new Date(doc.createdAt).toISOString() : undefined,
-    updatedAt: doc.updatedAt ? new Date(doc.updatedAt).toISOString() : undefined,
+    image: (doc.image as string) || "",
+    compatibleDevices: (doc.compatibleDevices as string[]) || [],
+    formats: (doc.formats as string[]) || ["PNG"],
+    lemonVariantId: (doc.lemonVariantId as string) || undefined,
+    createdAt: doc.createdAt ? new Date(doc.createdAt as string | Date).toISOString() : undefined,
+    updatedAt: doc.updatedAt ? new Date(doc.updatedAt as string | Date).toISOString() : undefined,
   };
 }

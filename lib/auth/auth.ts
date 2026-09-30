@@ -1,5 +1,7 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
+import { admin } from "better-auth/plugins/admin";
+import { jwt } from "better-auth/plugins/jwt";
 import client from "@/lib/db/mongodb";
 
 const db = client.db("stickify");
@@ -9,6 +11,40 @@ export const auth = betterAuth({
   database: mongodbAdapter(db, {
     client,
   }),
+  user: {
+    changeEmail: {
+      enabled: true,
+    },
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "user",
+        input: false, // Prevents clients from tampering with or setting their own role on registration
+      },
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          return {
+            data: {
+              ...user,
+              role: user.role || "user",
+            },
+          };
+        },
+      },
+    },
+  },
+  plugins: [
+    admin({
+      defaultRole: "user",
+      adminRole: "admin",
+    }),
+    jwt(),
+  ],
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false,

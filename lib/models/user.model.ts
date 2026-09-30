@@ -5,6 +5,10 @@ export interface IUser extends Document {
   email: string;
   emailVerified: boolean;
   image?: string;
+  role?: "user" | "admin" | string;
+  banned?: boolean;
+  banReason?: string;
+  banExpires?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,6 +19,10 @@ const UserSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     emailVerified: { type: Boolean, default: false },
     image: { type: String, default: null },
+    role: { type: String, default: "user" },
+    banned: { type: Boolean, default: false },
+    banReason: { type: String, default: null },
+    banExpires: { type: Number, default: null },
   },
   {
     timestamps: true,

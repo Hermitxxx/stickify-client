@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { FilterDisclosure, FilterItem } from "@/components/ui/filter-disclosure";
 import PrimaryButton from "@/components/ui/PrimaryButton";
@@ -204,6 +205,7 @@ const DEVICE_FILTERS: FilterItem[] = [
 ];
 
 export default function DeviceSelectorSection() {
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState("All Devices");
   const [selectedProduct, setSelectedProduct] = useState<SkinProduct | null>(null);
 
@@ -419,11 +421,11 @@ export default function DeviceSelectorSection() {
                     variant="gradient"
                     size="sm"
                     onClick={() => {
-                      alert(`Added ${selectedProduct.name} to cart!`);
                       setSelectedProduct(null);
+                      router.push("/products");
                     }}
                   >
-                    Buy Skin • {selectedProduct.price}
+                    View in Catalogue • {selectedProduct.price}
                   </PrimaryButton>
                 </div>
               </motion.div>

@@ -13,6 +13,12 @@
       "skillPath": "skills/find-skills/SKILL.md",
       "computedHash": "b146008599c31057cef1c145774cea5d5afb30e8f43fa802e47a4b461419aaaf"
     },
+    "lemon-squeezy": {
+      "source": "membranedev/application-skills",
+      "sourceType": "github",
+      "skillPath": "skills/lemon-squeezy/SKILL.md",
+      "computedHash": "792572bfaa334b5bf833c1d89b951ce8e9dc9a8b60e6f41883057614b8ec63f6"
+    },
     "mern-stack-architecture": {
       "source": "manish1803/nextjs-fullstack-skills",
       "sourceType": "github",
@@ -31,6 +37,12 @@
       "skillPath": "prisma-mongodb-upgrade/SKILL.md",
       "computedHash": "f9ba440e88ca4cec9801d04762296e29e99ca08cb8a8156e4f783ecf90279c8f"
     },
+    "redux-toolkit": {
+      "source": "mindrally/skills",
+      "sourceType": "github",
+      "skillPath": "redux-toolkit/SKILL.md",
+      "computedHash": "cceb1eb513c9e88802fd494d168d64029a690a5107d67b8f93ee2ff69faa061d"
+    },
     "senior-frontend": {
       "source": "alirezarezvani/claude-skills",
       "sourceType": "github",
@@ -42,6 +54,12 @@
       "sourceType": "github",
       "skillPath": "skills/stitch-skill/SKILL.md",
       "computedHash": "c96b580192b34167efa01f460bbc669ff4315cf97f3cf6ff85ded8029aa720b8"
+    },
+    "vercel-react-best-practices": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "6b526d013e28073246a36f99b529bc43745d30832ecfa8217b359c34f260ca6b"
     }
   }
 }

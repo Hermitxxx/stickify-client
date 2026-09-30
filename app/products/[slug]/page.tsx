@@ -8,8 +8,17 @@ import ProductDetailView from "@/components/features/products/ProductDetailView"
 import ProductCard from "@/components/features/products/ProductCard";
 import { ArrowRight } from "lucide-react";
 
+import { getServerSession } from "@/lib/services/auth.service";
+import {
+  checkUserSkinOwnership,
+  confirmUserPurchase,
+} from "@/lib/services/purchase.service";
+
+export const dynamic = "force-dynamic";
+
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ purchased?: string; txn_id?: string }>;
 }
 
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
@@ -41,12 +50,46 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export default async function ProductDetailPage({ params }: ProductPageProps) {
+export default async function ProductDetailPage({
+  params,
+  searchParams,
+}: ProductPageProps) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
+  }
+
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const isPurchasedRedirect = resolvedSearchParams.purchased === "true";
+
+  // Check if current authenticated user owns this product
+  const session = await getServerSession();
+  let isOwned = false;
+  if (session && session.user) {
+    // If arriving from payment redirect, guarantee purchase is saved into MongoDB immediately
+    if (isPurchasedRedirect) {
+      try {
+        await confirmUserPurchase({
+          userId: session.user.id,
+          userEmail: session.user.email || "",
+          userName: session.user.name || "Collector",
+          productSlug: product.slug,
+          transactionId: resolvedSearchParams.txn_id,
+        });
+      } catch (confirmErr) {
+        console.error("Failed to auto-confirm purchase on redirect:", confirmErr);
+      }
+    }
+
+    const isAdmin =
+      (session.user as any)?.role === "admin" ||
+      session.user.email?.includes("admin");
+    isOwned =
+      isAdmin ||
+      (await checkUserSkinOwnership(session.user.id, product._id, session.user.email)) ||
+      (await checkUserSkinOwnership(session.user.id, product.slug, session.user.email));
   }
 
   // Fetch a few other products for the related items section
@@ -56,14 +99,14 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     .slice(0, 4);
 
   return (
-    <main className="relative min-h-screen text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
+    <main className="relative min-h-screen bg-bg text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
       {/* Sticky Global Navigation */}
       <CardNav />
 
       {/* Main Content */}
-      <div className="relative z-10 pt-24 sm:pt-32 pb-24">
-        {/* Product Detail Interactive View */}
-        <ProductDetailView product={product} />
+      <div className="relative z-10 pt-32 sm:pt-36 lg:pt-40 pb-24">
+        {/* Product Detail Interactive View with Initial Ownership State */}
+        <ProductDetailView product={product} initialIsOwned={isOwned} />
 
         {/* Related Sticker Artworks */}
         {relatedProducts.length > 0 && (

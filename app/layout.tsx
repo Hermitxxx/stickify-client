@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Figtree } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { SmoothScrollProvider } from "@/components/layout/SmoothScrollProvider";
+import { StoreProvider } from "@/lib/redux/StoreProvider";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -37,7 +38,9 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col bg-bg text-fg font-sans selection:bg-gold selection:text-ink-950">
-        <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <StoreProvider>
+          <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        </StoreProvider>
       </body>
     </html>
   );

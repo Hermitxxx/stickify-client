@@ -9,6 +9,7 @@ export interface IProduct {
   image: string;
   compatibleDevices: string[];
   formats: string[];
+  lemonVariantId?: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
@@ -24,6 +25,7 @@ const ProductSchema = new Schema<IProductDocument>(
     image: { type: String, required: true },
     compatibleDevices: { type: [String], default: [] },
     formats: { type: [String], default: ["PNG"] },
+    lemonVariantId: { type: String, required: false, trim: true },
   },
   {
     timestamps: true,

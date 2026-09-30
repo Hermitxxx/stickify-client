@@ -27,7 +27,7 @@ export default async function ProductsPage() {
   });
 
   return (
-    <main className="relative min-h-screen text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
+    <main className="relative min-h-screen bg-bg text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
       {/* Sticky Global Navigation */}
       <CardNav />
 

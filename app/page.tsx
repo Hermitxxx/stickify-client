@@ -5,8 +5,13 @@ import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import CtaSection from "@/components/sections/CtaSection";
 import Footer from "@/components/layout/Footer";
 import Grainient from "@/components/motion/Grainient";
+import { getProducts } from "@/lib/services/product.service";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const { products, devices, total } = await getProducts({ limit: 12 });
+
   return (
     <main className="relative min-h-screen bg-bg text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
       {/* Sticky Global Navigation */}
@@ -43,7 +48,11 @@ export default function Home() {
       {/* Website Content Sections */}
       <div className="relative z-10">
         <HeroSection />
-        <DeviceSelectorSection />
+        <DeviceSelectorSection
+          products={products}
+          devices={devices}
+          totalCount={total}
+        />
         <HowItWorksSection />
         <CtaSection />
         <Footer />
@@ -51,3 +60,4 @@ export default function Home() {
     </main>
   );
 }
+

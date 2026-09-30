@@ -1,220 +1,217 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { FilterDisclosure, FilterItem } from "@/components/ui/filter-disclosure";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import SecondaryButton from "@/components/ui/SecondaryButton";
-import { GoStar, GoCheckCircle, GoCpu, GoShieldCheck, GoZap, GoArrowRight } from "react-icons/go";
+import { GoArrowRight } from "react-icons/go";
 import { IoClose } from "react-icons/io5";
 import { FaLayerGroup, FaMobileAlt, FaLaptop, FaTabletAlt, FaGamepad } from "react-icons/fa";
+import {
+  Sparkles,
+  Scissors,
+  CheckCircle2,
+  Lock,
+  ArrowRight,
+  ExternalLink,
+} from "lucide-react";
+import { IProduct } from "@/lib/models/product.model";
+import { BookmarkButton } from "@/components/features/products/BookmarkButton";
+import { Badge } from "@/components/ui/badge";
+import { useAppSelector } from "@/lib/redux/hooks";
+import { selectIsSkinOwned } from "@/lib/redux/slices/purchasesSlice";
 
-export interface SkinProduct {
-  id: string;
-  name: string;
-  category: "iPhone" | "MacBook" | "iPad" | "Gaming" | "Samsung";
-  deviceModel: string;
-  price: string;
-  rating: number;
-  reviewsCount: number;
-  badge?: string;
-  tagline: string;
-  frontImage: string;
-  backImage: string;
-  swatches: string[];
-  specs: {
-    material: string;
-    precision: string;
-    protection: string;
-    airRelease: string;
-  };
+interface DeviceSelectorSectionProps {
+  products?: IProduct[];
+  devices?: string[];
+  totalCount?: number;
 }
 
-const PRODUCTS: SkinProduct[] = [
-  {
-    id: "cyber-carbon",
-    name: "Cyber Carbon Fiber",
-    category: "iPhone",
-    deviceModel: "iPhone 16 Pro / Pro Max",
-    price: "$29.99",
-    rating: 4.9,
-    reviewsCount: 248,
-    badge: "BEST SELLER",
-    tagline: "3D Micro-Weave Tactile Texture",
-    frontImage: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1000&q=80",
-    backImage: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1000&q=80",
-    swatches: ["#1c1c1e", "#3a3a3c", "#E45742"],
-    specs: {
-      material: "3M™ Controltac™ Architectural Vinyl",
-      precision: "0.05mm Micro-Laser Cut Gapless Fit",
-      protection: "Scratch, Oil & Impact Buffer Shield",
-      airRelease: "True Invisible Air-Release Channels"
-    }
-  },
-  {
-    id: "cognac-leather",
-    name: "Cognac Vintage Leather",
-    category: "MacBook",
-    deviceModel: "MacBook Pro 14\" & 16\" M3",
-    price: "$44.99",
-    rating: 4.95,
-    reviewsCount: 192,
-    badge: "PREMIUM GRAIN",
-    tagline: "Warm Full-Grain Tactile Finish",
-    frontImage: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=1000&q=80",
-    backImage: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1000&q=80",
-    swatches: ["#8B4513", "#D2691E", "#3D2314"],
-    specs: {
-      material: "Authentic Grain Textured Vinyl",
-      precision: "Zero-Hassle Thermal Contour Mapped",
-      protection: "Heat Dissipating Non-Fade Coating",
-      airRelease: "Bubble-Free Snap Application"
-    }
-  },
-  {
-    id: "forged-gold-marble",
-    name: "Forged Gold Marble",
-    category: "iPad",
-    deviceModel: "iPad Pro 13\" M4 & Air",
-    price: "$34.99",
-    rating: 4.91,
-    reviewsCount: 134,
-    badge: "LIMITED EDITION",
-    tagline: "Metallic Leaf Vein High-Gloss Finish",
-    frontImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
-    backImage: "https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=1000&q=80",
-    swatches: ["#FCAD38", "#121212", "#E45742"],
-    specs: {
-      material: "Dual-Layer Gloss Polymer Film",
-      precision: "Apple Pencil & Smart Connector Cut",
-      protection: "UV-Safe Hydrophobic Surface Layer",
-      airRelease: "Micro-Porous Adhesive Backing"
-    }
-  },
-  {
-    id: "cyberpunk-neon",
-    name: "Cyberpunk Neon Nebula",
-    category: "Gaming",
-    deviceModel: "PS5 Slim & DualSense Controller",
-    price: "$39.99",
-    rating: 4.98,
-    reviewsCount: 310,
-    badge: "HOLOGRAPHIC",
-    tagline: "Chameleon Shift Prism Reflective",
-    frontImage: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=1000&q=80",
-    backImage: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1000&q=80",
-    swatches: ["#E45742", "#972828", "#FCAD38"],
-    specs: {
-      material: "Dynamic Iridescent Foil Vinyl",
-      precision: "Port-Exact Laser Cut Calibration",
-      protection: "Grip-Enhancing Sweating Barrier",
-      airRelease: "Rapid Escape Thermal Channels"
-    }
-  },
-  {
-    id: "obsidian-matte",
-    name: "Obsidian Matte Black",
-    category: "iPhone",
-    deviceModel: "iPhone 16 / 15 Series",
-    price: "$24.99",
-    rating: 4.89,
-    reviewsCount: 412,
-    badge: "ULTRA STEALTH",
-    tagline: "Zero-Reflection Anti-Fingerprint",
-    frontImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1000&q=80",
-    backImage: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1000&q=80",
-    swatches: ["#000000", "#1c1c1e", "#2c2c2e"],
-    specs: {
-      material: "Velvet Soft-Touch Matte Polymer",
-      precision: "MagSafe & Camera Bump Moulded",
-      protection: "Oleophobic Fingerprint Repellent",
-      airRelease: "100% Residue-Free Clean Peel"
-    }
-  },
-  {
-    id: "brushed-titanium",
-    name: "Brushed Titanium Slate",
-    category: "Samsung",
-    deviceModel: "Galaxy S24 Ultra / Z Fold 6",
-    price: "$27.99",
-    rating: 4.86,
-    reviewsCount: 168,
-    badge: "PRO FINISH",
-    tagline: "Linear Metallic Grain Reflection",
-    frontImage: "https://images.unsplash.com/photo-1535868463750-c78d9543614f?auto=format&fit=crop&w=1000&q=80",
-    backImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80",
-    swatches: ["#8e8e93", "#636366", "#3a3a3c"],
-    specs: {
-      material: "Real-Feel Metallic Brushed Foil",
-      precision: "S-Pen Slot & Speaker Zero-Obstruct Cut",
-      protection: "Edge-to-Edge Impact Buffer",
-      airRelease: "Zero Wireless Charging Signal Loss"
-    }
-  },
-  {
-    id: "concrete-stone",
-    name: "Concrete Terrazzo Stone",
-    category: "MacBook",
-    deviceModel: "MacBook Air 13\" & 15\" M3",
-    price: "$42.99",
-    rating: 4.92,
-    reviewsCount: 88,
-    badge: "ARCHITECTURAL",
-    tagline: "Speckled Industrial Stone Texture",
-    frontImage: "https://images.unsplash.com/photo-1518640467707-6811f4a6ab73?auto=format&fit=crop&w=1000&q=80",
-    backImage: "https://images.unsplash.com/photo-1588854337236-6889d631faa8?auto=format&fit=crop&w=1000&q=80",
-    swatches: ["#e5e5ea", "#d1d1d6", "#a1a1a6"],
-    specs: {
-      material: "Tactile Matte Mineral Composite",
-      precision: "Apple Logo Cutout & Trackpad Guard",
-      protection: "Thermal Vents Unlocked Shielding",
-      airRelease: "Precision Grid Adhesive Matrix"
-    }
-  },
-  {
-    id: "crimson-lava",
-    name: "Crimson Ember Magma",
-    category: "Gaming",
-    deviceModel: "Xbox Series X / Elite Controller",
-    price: "$37.99",
-    rating: 4.94,
-    reviewsCount: 205,
-    badge: "HOT ITEM",
-    tagline: "Deep Volcanic Glow Texture",
-    frontImage: "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=1000&q=80",
-    backImage: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1000&q=80",
-    swatches: ["#972828", "#E45742", "#FCAD38"],
-    specs: {
-      material: "3M™ Dual-Layer High Heat Vinyl",
-      precision: "Ergonomic Grip Zone Stippling",
-      protection: "High-Temperature Gaming Resilience",
-      airRelease: "Air-Pocket Zero Micro Channels"
-    }
-  }
-];
+const DEVICE_ICON_MAP: Record<string, typeof FaMobileAlt> = {
+  phone: FaMobileAlt,
+  iphone: FaMobileAlt,
+  samsung: FaMobileAlt,
+  laptop: FaLaptop,
+  macbook: FaLaptop,
+  tablet: FaTabletAlt,
+  ipad: FaTabletAlt,
+  gaming: FaGamepad,
+};
 
-const DEVICE_FILTERS: FilterItem[] = [
-  { id: "All Devices", label: "All Devices", icon: FaLayerGroup },
-  { id: "iPhone", label: "iPhone", icon: FaMobileAlt },
-  { id: "MacBook", label: "MacBook", icon: FaLaptop },
-  { id: "iPad", label: "iPad", icon: FaTabletAlt },
-  { id: "Gaming", label: "Gaming", icon: FaGamepad },
-  { id: "Samsung", label: "Samsung", icon: FaMobileAlt },
-];
-
-export default function DeviceSelectorSection() {
+function SkinProductCard({
+  product,
+  onOpenDetails,
+}: {
+  product: IProduct;
+  onOpenDetails: (p: IProduct) => void;
+}) {
   const router = useRouter();
-  const [activeCategory, setActiveCategory] = useState("All Devices");
-  const [selectedProduct, setSelectedProduct] = useState<SkinProduct | null>(null);
-
-  const filteredProducts = activeCategory === "All Devices"
-    ? PRODUCTS
-    : PRODUCTS.filter((p) => p.category === activeCategory);
+  const isOwned = useAppSelector((state) =>
+    selectIsSkinOwned(state, product.slug) || selectIsSkinOwned(state, product._id)
+  );
 
   return (
-    <section id="devices" className="relative w-full py-20 md:py-32 px-4 sm:px-6 select-none overflow-hidden">
+    <div className="group relative flex flex-col justify-between w-full rounded-2xl border border-white/10 bg-bg-elevated/90 p-4 sm:p-5 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-2xl hover:shadow-black/70 backdrop-blur-md">
+      {/* Product Artwork Container */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-ink-950 border border-border/60 group-hover:border-gold/30 transition-colors">
+        <Link
+          href={`/products/${product.slug}`}
+          className="block w-full h-full relative"
+          aria-label={`View ${product.title} cut file`}
+        >
+          <Image
+            src={product.image}
+            alt={product.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </Link>
+
+        {/* Top-Left Precision Spec Badge */}
+        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-20 pointer-events-none">
+          <div className="px-2 py-0.5 rounded-md bg-ink-950/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-fg-muted font-medium flex items-center gap-1">
+            <Scissors className="h-2.5 w-2.5 text-orange" />
+            <span>300 DPI</span>
+          </div>
+
+          {isOwned && (
+            <Badge
+              variant="gold"
+              size="sm"
+              className="bg-gold/20 text-gold border-gold/40 text-[9px] font-mono font-bold shadow-sm shadow-gold/20"
+            >
+              OWNED
+            </Badge>
+          )}
+        </div>
+
+        {/* Top-Right Bookmark Button */}
+        <div className="absolute top-2.5 right-2.5 z-20">
+          <BookmarkButton product={product} variant="floating" showText={false} />
+        </div>
+      </div>
+
+      {/* Content: Title, Price, Compatible Devices */}
+      <div className="mt-4 flex flex-col flex-1 justify-between">
+        <div>
+          <div className="flex items-baseline justify-between gap-2">
+            <Link
+              href={`/products/${product.slug}`}
+              className="text-lg font-bold tracking-tight text-fg group-hover:text-gold transition-colors leading-snug line-clamp-1"
+            >
+              {product.title}
+            </Link>
+            <span className="font-mono text-xl font-extrabold text-gold shrink-0">
+              ${product.price.toFixed(2)}
+            </span>
+          </div>
+
+          <p className="mt-1 text-xs text-fg-muted line-clamp-2 leading-relaxed">
+            {product.description || "Precision vector artwork mapped for Cricut, Silhouette, and laser vinyl cutters."}
+          </p>
+
+          {/* Compatible Device Tags */}
+          {product.compatibleDevices && product.compatibleDevices.length > 0 && (
+            <div className="flex items-center gap-1.5 flex-wrap pt-3">
+              {product.compatibleDevices.slice(0, 3).map((dev) => (
+                <span
+                  key={dev}
+                  className="inline-flex items-center gap-1 text-[10px] font-mono text-fg-muted/80 bg-ink-900/80 px-2 py-0.5 rounded-md border border-border/40"
+                >
+                  <span>{dev}</span>
+                </span>
+              ))}
+              {product.compatibleDevices.length > 3 && (
+                <span className="text-[10px] font-mono text-fg-muted/60">
+                  +{product.compatibleDevices.length - 3} more
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Card Action Buttons Strip */}
+        <div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between gap-2">
+          <SecondaryButton
+            variant="subtle"
+            size="sm"
+            className="flex-1 text-xs"
+            iconRight={<GoArrowRight className="h-3.5 w-3.5" />}
+            onClick={() => onOpenDetails(product)}
+          >
+            Quick specs
+          </SecondaryButton>
+
+          <Link
+            href={`/products/${product.slug}`}
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-orange hover:text-gold hover:bg-ink-800/80 transition-colors"
+          >
+            <span>{isOwned ? "Download" : "Buy Cut"}</span>
+            <ExternalLink className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function DeviceSelectorSection({
+  products = [],
+  devices = [],
+  totalCount,
+}: DeviceSelectorSectionProps) {
+  const router = useRouter();
+  const [activeCategory, setActiveCategory] = useState("All Devices");
+  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
+
+  // Construct device filter list dynamically
+  const filterItems = useMemo<FilterItem[]>(() => {
+    const items: FilterItem[] = [
+      { id: "All Devices", label: "All Devices", icon: FaLayerGroup },
+    ];
+
+    const uniqueDevices = Array.from(
+      new Set(
+        devices.length > 0
+          ? devices
+          : products.flatMap((p) => p.compatibleDevices || [])
+      )
+    ).filter(Boolean);
+
+    for (const dev of uniqueDevices) {
+      const lower = dev.toLowerCase();
+      const matchedKey = Object.keys(DEVICE_ICON_MAP).find((k) =>
+        lower.includes(k)
+      );
+      const icon = matchedKey ? DEVICE_ICON_MAP[matchedKey] : FaLayerGroup;
+      items.push({ id: dev, label: dev, icon });
+    }
+
+    return items;
+  }, [devices, products]);
+
+  // Filter products by active category
+  const filteredProducts = useMemo(() => {
+    if (activeCategory === "All Devices") {
+      return products;
+    }
+    return products.filter((p) =>
+      p.compatibleDevices?.some(
+        (d) => d.toLowerCase() === activeCategory.toLowerCase()
+      )
+    );
+  }, [products, activeCategory]);
+
+  return (
+    <section
+      id="devices"
+      className="relative w-full py-20 md:py-32 px-4 sm:px-6 select-none overflow-hidden"
+    >
       {/* Background ambient glow matching brand tokens */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-orange/10 blur-[160px] opacity-30" />
 
@@ -225,7 +222,7 @@ export default function DeviceSelectorSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full bg-bg-elevated/90 px-4 py-1.5 backdrop-blur-md"
+          className="mb-6 inline-flex items-center gap-2 rounded-full bg-bg-elevated/90 px-4 py-1.5 backdrop-blur-md border border-border/80"
         >
           <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
           <span className="text-xs font-bold tracking-wider text-fg-muted uppercase">
@@ -255,83 +252,74 @@ export default function DeviceSelectorSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-6 text-base sm:text-lg md:text-xl text-fg-muted text-center max-w-2xl mx-auto font-normal leading-relaxed"
         >
-          Filter by hardware, preview 3D tactile materials, and inspect micro-laser engineering specifications.
+          Explore precision-mapped vinyl cut templates for smartphones, tablets, and laptops. Pre-calibrated for Cricut, Silhouette, and laser cutters.
         </motion.p>
 
-        {/* FilterDisclosure Control */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-          className="mt-10 md:mt-14 mb-14 flex justify-center w-full max-w-full py-2 px-2"
-        >
-          <FilterDisclosure
-            items={DEVICE_FILTERS}
-            defaultActiveId="All Devices"
-            onChange={(id) => setActiveCategory(id)}
-          />
-        </motion.div>
+        {/* Dynamic FilterDisclosure Control */}
+        {filterItems.length > 1 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="mt-10 md:mt-14 mb-14 flex justify-center w-full max-w-full py-2 px-2"
+          >
+            <FilterDisclosure
+              items={filterItems}
+              defaultActiveId="All Devices"
+              onChange={(id) => setActiveCategory(id)}
+            />
+          </motion.div>
+        )}
 
-        {/* Product Cards Grid: 3-Column Layout */}
+        {/* Dynamic Product Cards Grid: 3-Column Layout */}
         <motion.div
           layout
           className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto items-stretch"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProducts.map((product) => {
-              return (
-                <motion.div
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0, y: 24, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className="w-full flex"
-                >
-                  <div className="group relative flex flex-col justify-between w-full rounded-2xl border border-white/10 bg-bg-elevated/90 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-2xl hover:shadow-black/70 backdrop-blur-md">
-                    {/* Product Image */}
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-bg">
-                      <Image
-                        src={product.frontImage}
-                        alt={product.name}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
-
-                    {/* Content: Name & Price */}
-                    <div className="mt-4 flex flex-col flex-1 justify-between">
-                      <div>
-                        <h3 className="text-lg font-bold tracking-tight text-fg group-hover:text-gold transition-colors leading-snug">
-                          {product.name}
-                        </h3>
-                        <p className="mt-1 text-xl font-extrabold text-gold">
-                          {product.price}
-                        </p>
-                      </div>
-
-                      {/* Button to See Details */}
-                      <SecondaryButton
-                        variant="subtle"
-                        size="sm"
-                        className="mt-4 w-full"
-                        iconRight={<GoArrowRight className="h-4 w-4" />}
-                        onClick={() => setSelectedProduct(product)}
-                      >
-                        See details
-                      </SecondaryButton>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+            {filteredProducts.map((product) => (
+              <motion.div
+                key={product._id || product.slug}
+                layout
+                initial={{ opacity: 0, y: 24, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="w-full flex"
+              >
+                <SkinProductCard
+                  product={product}
+                  onOpenDetails={(p) => setSelectedProduct(p)}
+                />
+              </motion.div>
+            ))}
           </AnimatePresence>
         </motion.div>
 
-        {/* Product Details Modal */}
+        {/* View All Products CTA Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-14 sm:mt-18 flex flex-col sm:flex-row items-center justify-center gap-4 text-center w-full"
+        >
+          <Link
+            href="/products"
+            className="group relative inline-flex items-center gap-3 px-8 sm:px-10 py-4 rounded-2xl bg-orange hover:bg-gold text-ink-950 font-sans font-bold text-sm sm:text-base tracking-wide transition-all duration-300 shadow-xl shadow-orange/20 hover:shadow-gold/30 hover:scale-[1.02] active:scale-[0.98] overflow-hidden"
+          >
+            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+            <Sparkles className="h-4 w-4 text-ink-950 transition-transform duration-300 group-hover:rotate-12" />
+            <span>
+              View All Products
+              {totalCount || products.length ? ` (${totalCount || products.length}+ Artworks)` : ""}
+            </span>
+            <ArrowRight className="h-4 w-4 text-ink-950 transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        </motion.div>
+
+        {/* Product Details Quick-View Modal */}
         <AnimatePresence>
           {selectedProduct && (
             <motion.div
@@ -359,52 +347,72 @@ export default function DeviceSelectorSection() {
                 </button>
 
                 {/* Modal Image */}
-                <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-bg mb-4">
+                <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-ink-950 mb-4 border border-border/60">
                   <Image
-                    src={selectedProduct.frontImage}
-                    alt={selectedProduct.name}
+                    src={selectedProduct.image}
+                    alt={selectedProduct.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 500px"
                     className="object-cover"
                   />
+                  <div className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-ink-950/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-fg font-medium flex items-center gap-1.5">
+                    <Scissors className="h-3 w-3 text-orange" />
+                    <span>300 DPI Master Cut</span>
+                  </div>
                 </div>
 
                 {/* Modal Title & Price */}
                 <div className="flex items-start justify-between gap-4 mb-2">
                   <div>
                     <span className="text-xs font-mono uppercase text-gold tracking-wider block mb-1">
-                      {selectedProduct.category} Series • {selectedProduct.deviceModel}
+                      {selectedProduct.compatibleDevices?.join(" • ") || "Phone • Tablet • Laptop"}
                     </span>
                     <h3 className="text-2xl font-bold text-fg tracking-tight">
-                      {selectedProduct.name}
+                      {selectedProduct.title}
                     </h3>
                   </div>
-                  <span className="text-2xl font-black text-gold shrink-0">
-                    {selectedProduct.price}
+                  <span className="text-2xl font-black text-gold shrink-0 font-mono">
+                    ${selectedProduct.price.toFixed(2)}
                   </span>
                 </div>
 
-                <p className="text-sm text-fg-muted mb-4">
-                  {selectedProduct.tagline}
+                <p className="text-sm text-fg-muted mb-4 leading-relaxed">
+                  {selectedProduct.description || "Precision vector cut template engineered with ±0.05mm tolerance for edge-to-edge device skin application."}
                 </p>
 
                 {/* Specifications Grid */}
-                <div className="grid grid-cols-2 gap-2.5 mb-6 text-xs">
-                  <div className="p-2.5 rounded-lg bg-ink-800 border border-white/5">
-                    <span className="text-ink-400 font-mono text-[10px] uppercase block">Material</span>
-                    <span className="text-fg font-medium leading-snug">{selectedProduct.specs.material}</span>
+                <div className="grid grid-cols-2 gap-2.5 mb-6 text-xs font-sans">
+                  <div className="p-2.5 rounded-xl bg-ink-800 border border-white/5">
+                    <span className="text-fg-muted font-mono text-[10px] uppercase block">
+                      Material
+                    </span>
+                    <span className="text-fg font-semibold leading-snug">
+                      3M™ Controltac™ Vinyl
+                    </span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-ink-800 border border-white/5">
-                    <span className="text-ink-400 font-mono text-[10px] uppercase block">Precision</span>
-                    <span className="text-fg font-medium leading-snug">{selectedProduct.specs.precision}</span>
+                  <div className="p-2.5 rounded-xl bg-ink-800 border border-white/5">
+                    <span className="text-fg-muted font-mono text-[10px] uppercase block">
+                      Tolerance
+                    </span>
+                    <span className="text-fg font-semibold leading-snug">
+                      ±0.05 mm Micro-Laser CAD
+                    </span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-ink-800 border border-white/5">
-                    <span className="text-ink-400 font-mono text-[10px] uppercase block">Protection</span>
-                    <span className="text-fg font-medium leading-snug">{selectedProduct.specs.protection}</span>
+                  <div className="p-2.5 rounded-xl bg-ink-800 border border-white/5">
+                    <span className="text-fg-muted font-mono text-[10px] uppercase block">
+                      Resolution
+                    </span>
+                    <span className="text-fg font-semibold leading-snug">
+                      300 DPI Lossless Vector
+                    </span>
                   </div>
-                  <div className="p-2.5 rounded-lg bg-ink-800 border border-white/5">
-                    <span className="text-ink-400 font-mono text-[10px] uppercase block">Air Release</span>
-                    <span className="text-fg font-medium leading-snug">{selectedProduct.specs.airRelease}</span>
+                  <div className="p-2.5 rounded-xl bg-ink-800 border border-white/5">
+                    <span className="text-fg-muted font-mono text-[10px] uppercase block">
+                      Export Formats
+                    </span>
+                    <span className="text-fg font-semibold leading-snug">
+                      {selectedProduct.formats?.join(" • ") || "PNG, SVG"}
+                    </span>
                   </div>
                 </div>
 
@@ -421,11 +429,12 @@ export default function DeviceSelectorSection() {
                     variant="gradient"
                     size="sm"
                     onClick={() => {
+                      const slug = selectedProduct.slug;
                       setSelectedProduct(null);
-                      router.push("/products");
+                      router.push(`/products/${slug}`);
                     }}
                   >
-                    View in Catalogue • {selectedProduct.price}
+                    View Cut File • ${selectedProduct.price.toFixed(2)} USD
                   </PrimaryButton>
                 </div>
               </motion.div>

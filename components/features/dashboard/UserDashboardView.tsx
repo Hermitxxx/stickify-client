@@ -29,18 +29,28 @@ import { setInitialPurchases } from "@/lib/redux/slices/purchasesSlice";
 
 interface UserDashboardViewProps {
   initialData: UserDashboardData;
+  activeTab?: "purchases" | "bookmarks" | "transactions";
+  onTabChange?: (tab: "purchases" | "bookmarks" | "transactions") => void;
 }
 
-export function UserDashboardView({ initialData }: UserDashboardViewProps) {
+export function UserDashboardView({
+  initialData,
+  activeTab: controlledActiveTab,
+  onTabChange,
+}: UserDashboardViewProps) {
   const dispatch = useAppDispatch();
   const reduxBookmarks = useAppSelector(selectAllBookmarks);
   const reduxBookmarksCount = useAppSelector(selectBookmarksCount);
 
   const [data, setData] = useState<UserDashboardData>(initialData);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<"purchases" | "bookmarks" | "transactions">(
-    "purchases"
-  );
+  const [internalActiveTab, setInternalActiveTab] = useState<
+    "purchases" | "bookmarks" | "transactions"
+  >("purchases");
+
+  const activeTab = controlledActiveTab ?? internalActiveTab;
+  const setActiveTab = onTabChange ?? setInternalActiveTab;
+
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Synchronize state whenever initialData changes
@@ -240,48 +250,6 @@ export function UserDashboardView({ initialData }: UserDashboardViewProps) {
           </div>
         </div>
       </SpotlightCard>
-
-      {/* Navigation Tab Buttons */}
-      <div className="flex items-center gap-2 p-1.5 bg-bg-elevated border border-border/80 rounded-2xl overflow-x-auto">
-        <button
-          type="button"
-          onClick={() => setActiveTab("purchases")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-semibold transition-all whitespace-nowrap cursor-pointer ${
-            activeTab === "purchases"
-              ? "bg-accent/20 text-orange border border-accent/40 shadow-sm"
-              : "text-fg-muted hover:text-fg"
-          }`}
-        >
-          <Download className="h-4 w-4" />
-          <span>Purchased Cut Files ({data.transactions.length})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab("bookmarks")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-semibold transition-all whitespace-nowrap cursor-pointer ${
-            activeTab === "bookmarks"
-              ? "bg-accent/20 text-orange border border-accent/40 shadow-sm"
-              : "text-fg-muted hover:text-fg"
-          }`}
-        >
-          <Bookmark className="h-4 w-4" />
-          <span>Bookmarked Skins ({reduxBookmarksCount})</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => setActiveTab("transactions")}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-semibold transition-all whitespace-nowrap cursor-pointer ${
-            activeTab === "transactions"
-              ? "bg-accent/20 text-orange border border-accent/40 shadow-sm"
-              : "text-fg-muted hover:text-fg"
-          }`}
-        >
-          <Receipt className="h-4 w-4" />
-          <span>Transactions & Invoices</span>
-        </button>
-      </div>
 
       {/* Tab 1: Purchased Cut Files */}
       {activeTab === "purchases" && (

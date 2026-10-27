@@ -29,14 +29,22 @@ import DeleteUserModal from "./DeleteUserModal";
 interface AdminDashboardViewProps {
   initialData: AdminDashboardData;
   currentUserId: string;
+  activeTab?: "users" | "transactions";
+  onTabChange?: (tab: "users" | "transactions") => void;
 }
 
 export function AdminDashboardView({
   initialData,
   currentUserId,
+  activeTab: controlledActiveTab,
+  onTabChange,
 }: AdminDashboardViewProps) {
   const [data, setData] = useState<AdminDashboardData>(initialData);
-  const [activeTab, setActiveTab] = useState<"users" | "transactions">("users");
+  const [internalActiveTab, setInternalActiveTab] = useState<"users" | "transactions">("users");
+
+  const activeTab = controlledActiveTab ?? internalActiveTab;
+  const setActiveTab = onTabChange ?? setInternalActiveTab;
+
   const [searchQuery, setSearchQuery] = useState("");
   const [userToDelete, setUserToDelete] = useState<AdminUserListItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);

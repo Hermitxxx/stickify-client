@@ -22,20 +22,18 @@ export default async function AdminDashboardPage() {
   ]);
 
   return (
-    <main className="min-h-screen w-full bg-bg text-fg font-sans antialiased selection:bg-gold selection:text-ink-950 pb-24">
+    <main className="min-h-screen w-full bg-bg text-fg font-sans antialiased selection:bg-gold selection:text-ink-950">
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-gold/5 blur-3xl" />
         <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full bg-maroon/5 blur-3xl" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14">
-        <DashboardContainer
-          userData={userData}
-          adminData={adminData}
-          role="admin"
-          initialView="admin"
-        />
-      </div>
+      <DashboardContainer
+        userData={userData}
+        adminData={adminData}
+        role="admin"
+        initialView="admin"
+      />
     </main>
   );
 }
